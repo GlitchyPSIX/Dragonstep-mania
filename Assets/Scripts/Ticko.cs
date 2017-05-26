@@ -11,8 +11,9 @@ public class Ticko : MonoBehaviour
     public float halfbeatdur;
     public float beatdur;
     public Text OSNumber;
-    bool IsOffbeat = false;
-    bool StepOnOffbeats = false;
+    public bool IsOffbeat = false;
+    public bool StepOnOffbeats = false;
+    bool CanStep = false;
     GameObject[] BackgroundSwitchers;
     int onbeats;
 
@@ -28,18 +29,6 @@ public class Ticko : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if (GetComponent<Conductor>().songposition + offset <= 0.1)
-        {
-            pastbeat = 0;  
-        }
-
-        if (GetComponent<Conductor>().songposition + offset > pastbeat + beatdur)
-        {
-            pastbeat += (beatdur);
-            beatcount += 1f;
-//            GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatStep();
-        }
 
         if (Input.GetKeyDown("a"))
         {
@@ -69,6 +58,22 @@ public class Ticko : MonoBehaviour
             }
 
         }
-        OSNumber.text = beatcount.ToString() + "\n" + (GetComponent<Conductor>().songposition + offset).ToString() + "\n" + onbeats.ToString();
+
+        if ((GetComponent<Conductor>().songposition + offset - halfbeatdur) < (pastbeat - (halfbeatdur * 0.3)))
+        {
+            if (Input.GetButtonDown("Step"))
+            {
+
+                GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatStep();
+
+            }
+            CanStep = true;
+
+        }
+        else
+        {
+            CanStep = false;
+        }
+        OSNumber.text = beatcount.ToString() + "\n" + (GetComponent<Conductor>().songposition + offset).ToString() + "\n" + onbeats.ToString() + "\n" + (GetComponent<Conductor>().songposition + offset).ToString() + "\n" + (pastbeat - (0.3 * halfbeatdur)).ToString() + "\n" + CanStep.ToString();
     }
 }

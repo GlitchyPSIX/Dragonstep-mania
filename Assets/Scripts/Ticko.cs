@@ -21,20 +21,22 @@ public class Ticko : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        //Specify beatduration and half-beat duration (why even?) 
         halfbeatdur = (60 / GetComponent<Conductor>().bpm) / 2;
         beatdur = (60 / GetComponent<Conductor>().bpm);
+        //for every background stepswitcher
         BackgroundSwitchers = GameObject.FindGameObjectsWithTag("Background");
     }
 	
     // Update is called once per frame
     void Update()
     {
-
+// debug - press A to make the BGswitchers switch to offbeat
         if (Input.GetKeyDown("a"))
         {
             StepOnOffbeats = !StepOnOffbeats;
         }
-
+//make bg stepswitchers step on beats or offbeats depending on if they should or not
         if (GetComponent<Conductor>().songposition + offset > pastbeat + halfbeatdur)
         {
             beatcount += 0.5f;
@@ -58,7 +60,7 @@ public class Ticko : MonoBehaviour
             }
 
         }
-
+//WIP - add time window for the player to be able to step
         if ((GetComponent<Conductor>().songposition + offset - halfbeatdur) < (pastbeat - (halfbeatdur * 0.3)))
         {
             if (Input.GetButtonDown("Step"))
@@ -74,6 +76,7 @@ public class Ticko : MonoBehaviour
         {
             CanStep = false;
         }
+        //debug - show info I need
         OSNumber.text = beatcount.ToString() + "\n" + (GetComponent<Conductor>().songposition + offset).ToString() + "\n" + onbeats.ToString() + "\n" + (GetComponent<Conductor>().songposition + offset).ToString() + "\n" + (pastbeat - (0.3 * halfbeatdur)).ToString() + "\n" + CanStep.ToString();
     }
 }

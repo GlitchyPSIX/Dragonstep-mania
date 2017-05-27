@@ -13,7 +13,6 @@ public class Ticko : MonoBehaviour
     public Text OSNumber;
     public bool IsOffbeat = false;
     public bool StepOnOffbeats = false;
-    bool CanStep = false;
     GameObject[] BackgroundSwitchers;
     int onbeats;
 
@@ -60,23 +59,8 @@ public class Ticko : MonoBehaviour
             }
 
         }
-//WIP - add time window for the player to be able to step
-        if ((GetComponent<Conductor>().songposition + offset - halfbeatdur) < (pastbeat - (halfbeatdur * 0.3)))
-        {
-            if (Input.GetButtonDown("Step"))
-            {
 
-                GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatStep();
-
-            }
-            CanStep = true;
-
-        }
-        else
-        {
-            CanStep = false;
-        }
         //debug - show info I need
-        OSNumber.text = beatcount.ToString() + "\n" + (GetComponent<Conductor>().songposition + offset).ToString() + "\n" + onbeats.ToString() + "\n" + (GetComponent<Conductor>().songposition + offset).ToString() + "\n" + (pastbeat - (0.3 * halfbeatdur)).ToString() + "\n" + CanStep.ToString();
+        OSNumber.text = beatcount.ToString() + "\n" + (GetComponent<Conductor>().songposition + offset).ToString() + "\n" + onbeats.ToString() + "\n" + (GetComponent<Conductor>().songposition + offset).ToString() + "\n" + (pastbeat - (0.3 * halfbeatdur)).ToString();
     }
 }

@@ -50,9 +50,10 @@ StepOnOffbeats = GetComponent<Ticko>().StepOnOffbeats;
 		// calculation1 = (GetComponent<Conductor>().songposition + offset - halfbeatdur);
 		// calculation2 = (pastbeat + offset - (halfbeatdur * 0.25f));
         // if ( calculation1 < calculation2 )
+        
                      if (Input.GetButtonDown("Step"))
             {
-        if (isOnTime((pastbeat - beatdur*0.3f), beatdur, 999))
+        if (isOnTime((pastbeat - halfbeatdur*0.3f), halfbeatdur, 999))
         {
 
 

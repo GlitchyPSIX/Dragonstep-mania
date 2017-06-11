@@ -26,6 +26,16 @@ IsOffbeat = GetComponent<Ticko>().IsOffbeat;
 StepOnOffbeats = GetComponent<Ticko>().StepOnOffbeats;
 	}
 	
+public bool isOnTime(float margin, float beattime, float position = 999){
+
+if (position == 999){
+    position = GetComponent<Conductor>().songposition;
+}
+
+return Mathf.Abs (position - beattime) < margin;
+
+}
+
 	// Update is called once per frame
 	void Update () {
 		pastbeat = GetComponent<Ticko>().pastbeat;
@@ -36,16 +46,19 @@ IsOffbeat = GetComponent<Ticko>().IsOffbeat;
 StepOnOffbeats = GetComponent<Ticko>().StepOnOffbeats;
 
 		//WIP - add time window for the player to be able to step
-		calculation1 = (GetComponent<Conductor>().songposition + offset - halfbeatdur);
-		calculation2 = (pastbeat + offset - (halfbeatdur * 0.3f));
-        if ( calculation1 < calculation2 )
-        {
-            if (Input.GetButtonDown("Step"))
+        // Ignore for now, trying to fully understand what fizzd-sensei recommended me
+		// calculation1 = (GetComponent<Conductor>().songposition + offset - halfbeatdur);
+		// calculation2 = (pastbeat + offset - (halfbeatdur * 0.25f));
+        // if ( calculation1 < calculation2 )
+                     if (Input.GetButtonDown("Step"))
             {
+        if (isOnTime((pastbeat - beatdur*0.3f), beatdur, 999))
+        {
+
 
                 GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatStep();
 
-            }
+             }
             // CanStep = true;
 
         }

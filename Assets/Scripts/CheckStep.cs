@@ -51,7 +51,7 @@ StepOnOffbeats = GetComponent<Ticko>().StepOnOffbeats;
     if (Input.GetButtonDown("Step"))
         {
         if ((position = GetComponent<Conductor>().songposition < (pastbeat - 0.2f*halfbeatdur) ||
-        (position = GetComponent<Conductor>().songposition > (pastbeat + 0.3f*halfbeatdur))) && IsOffbeat = true)
+        (position = GetComponent<Conductor>().songposition > (pastbeat + 0.3f*halfbeatdur))) && IsOffbeat == true)
         {
 
 

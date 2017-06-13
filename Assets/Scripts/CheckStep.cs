@@ -47,13 +47,11 @@ StepOnOffbeats = GetComponent<Ticko>().StepOnOffbeats;
 
 		//WIP - add time window for the player to be able to step
         // Ignore for now, trying to fully understand what fizzd-sensei recommended me
-		// calculation1 = (GetComponent<Conductor>().songposition + offset - halfbeatdur);
-		// calculation2 = (pastbeat + offset - (halfbeatdur * 0.25f));
-        // if ( calculation1 < calculation2 )
-        
-                     if (Input.GetButtonDown("Step"))
-            {
-        if (isOnTime((pastbeat - halfbeatdur*0.3f), halfbeatdur, 999))
+
+    if (Input.GetButtonDown("Step"))
+        {
+        if ((position = GetComponent<Conductor>().songposition < (pastbeat - 0.2f*halfbeatdur) ||
+        (position = GetComponent<Conductor>().songposition > (pastbeat + 0.3f*halfbeatdur))) && IsOffbeat = true)
         {
 
 

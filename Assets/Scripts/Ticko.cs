@@ -38,6 +38,9 @@ public class Ticko : MonoBehaviour
 //make bg stepswitchers step on beats or offbeats depending on if they should or not
         if (GetComponent<Conductor>().songposition + offset > pastbeat + halfbeatdur)
         {
+
+//TODO: use a whole beat instead of a half beat -- might increase accuracy
+
             beatcount += 0.5f;
             pastbeat += (halfbeatdur);
             IsOffbeat = !IsOffbeat;

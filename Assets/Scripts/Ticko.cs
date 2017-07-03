@@ -7,6 +7,7 @@ public class Ticko : MonoBehaviour
 {
     public float pastbeat = 0f;
     public float lastonbeat = 0f;
+    public float lastoffbeat = 0f;
     public float offset = 0;
     public float beatcount = 0;
     public float halfbeatdur;
@@ -27,29 +28,34 @@ public class Ticko : MonoBehaviour
         //for every background stepswitcher
         BackgroundSwitchers = GameObject.FindGameObjectsWithTag("Background");
     }
-	
+
     // Update is called once per frame
     void Update()
     {
-    // debug - press A to make the BGswitchers switch to offbeat
+        // debug - press A to make the BGswitchers switch to offbeat
         if (Input.GetKeyDown("a"))
         {
             StepOnOffbeats = !StepOnOffbeats;
         }
-    //make bg stepswitchers step on beats or offbeats depending on if they should or not
+        //make bg stepswitchers step on beats or offbeats depending on if they should or not
         if (GetComponent<Conductor>().songposition + offset > pastbeat + halfbeatdur)
-    {
+        {
 
-//use a whole beat instead of a half beat -- might increase accuracy
-//didn't work
+            //use a whole beat instead of a half beat -- might increase accuracy
+            //didn't work
 
             beatcount += 0.5f;
             pastbeat += (halfbeatdur);
             IsOffbeat = !IsOffbeat;
 
             //attempt to record the last onbeat hit
-            if (IsOffbeat == true){
+            if (IsOffbeat == true)
+            {
                 lastonbeat += beatdur;
+            }
+            else if (IsOffbeat == false)
+            {
+                lastoffbeat += beatdur;
             }
 
 

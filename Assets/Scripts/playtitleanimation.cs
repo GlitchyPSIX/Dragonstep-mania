@@ -11,6 +11,7 @@ public class playtitleanimation : MonoBehaviour {
 		if (Input.GetButtonDown("Step")){
 			GetComponent<Animator>().Play("Draw Out");
 		}
+		
 		//Visual Studio Code acted super dense for me today.
 	}
 }

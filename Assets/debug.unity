@@ -411,6 +411,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pastbeat: 0
+  lastonbeat: 0
   offset: 0
   beatcount: 0
   halfbeatdur: 0
@@ -429,12 +430,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70dd35f55e6db93448e536cb2d720d12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pastbeat: 0
-  offset: 0
   halfbeatdur: 0
   beatdur: 0
-  IsOffbeat: 0
-  StepOnOffbeats: 0
   OSText: {fileID: 2134842103}
 --- !u!1 &901591111
 GameObject:

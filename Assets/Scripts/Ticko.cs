@@ -53,6 +53,8 @@ public class Ticko : MonoBehaviour
             {
                 lastonbeat += beatdur;
             }
+
+            //same for the last offbeat
             else if (IsOffbeat == false)
             {
                 lastoffbeat += beatdur;

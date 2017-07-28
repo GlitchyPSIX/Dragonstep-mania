@@ -10,13 +10,15 @@ public class playtitleanimation : MonoBehaviour {
     Text VersionText;
 
     void Start(){
-		LoadDebug = SceneManager.LoadSceneAsync("debug");
+        LoadDebug.allowSceneActivation = false;
+        LoadDebug = SceneManager.LoadSceneAsync("debug");
         VersionText = GameObject.Find("VersionTag").GetComponent<Text>();
         VersionText.text = "Loading...";
     }
 
 	// Update is called once per frame
 	void Update () {
+		
 		if (Input.GetButtonDown("Step")){
 			GetComponent<Animator>().Play("Draw Out");
 		}

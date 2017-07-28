@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 9c179ca360fbfac42add1b452f097fb1
+timeCreated: 1500832571
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 0
+  fontName: Unlockstep
+  fontNames:
+  - Unlockstep
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

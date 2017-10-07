@@ -37,14 +37,9 @@ public class Ticko : MonoBehaviour
         {
             StepOnOffbeats = !StepOnOffbeats;
         }
-        //make bg stepswitchers step on beats or offbeats depending on if they should or not
-        // (aka CPU logic)
+        // every halfbeat...
         if (GetComponent<Conductor>().songposition + offset > pastbeat + halfbeatdur)
         {
-
-            //use a whole beat instead of a half beat -- might increase accuracy
-            //didn't work
-
             beatcount += 0.5f;
             pastbeat += (halfbeatdur);
             IsOffbeat = !IsOffbeat;
@@ -60,8 +55,8 @@ public class Ticko : MonoBehaviour
             {
                 lastoffbeat += beatdur;
             }
-
-
+            //make bg stepswitchers step on beats or offbeats depending on if they should or not
+            // (aka CPU logic)
             if (IsOffbeat == true && StepOnOffbeats == true)
             {
                 foreach (GameObject switcher in BackgroundSwitchers)

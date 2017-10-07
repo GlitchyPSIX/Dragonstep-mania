@@ -5,12 +5,13 @@ using UnityEngine.UI;
 
 public class Ticko : MonoBehaviour
 {
+    private bool switchingStep;
     public float pastbeat = 0f;
     public float lastonbeat = 0f;
     public float lastoffbeat = 0f;
     public float offset = 0;
     public float beatcount = 0;
-    public float halfbeatdur;
+    public float beatmultiplier;
     public float beatdur;
     public Text OSNumber;
     public bool IsOffbeat = false;
@@ -23,7 +24,7 @@ public class Ticko : MonoBehaviour
     void Start()
     {
         //Specify beatduration and half-beat duration (why even?) 
-        halfbeatdur = (60 / GetComponent<Conductor>().bpm) / 2;
+        beatmultiplier = 1f;
         beatdur = (60 / GetComponent<Conductor>().bpm);
         //for every background stepswitcher
         BackgroundSwitchers = GameObject.FindGameObjectsWithTag("Background");
@@ -35,29 +36,20 @@ public class Ticko : MonoBehaviour
         // debug - press A to make the BGswitchers switch to offbeat
         if (Input.GetKeyDown("a"))
         {
-            StepOnOffbeats = !StepOnOffbeats;
+            updateOrientation(1);
         }
-        // every halfbeat...
-        if (GetComponent<Conductor>().songposition + offset > pastbeat + halfbeatdur)
+
+        // every beat...
+        if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
         {
-            beatcount += 0.5f;
-            pastbeat += (halfbeatdur);
-            IsOffbeat = !IsOffbeat;
+            updateOrientation(0);
+            beatcount += 1f;
 
-            //attempt to record the last onbeat hit
-            if (IsOffbeat == true)
-            {
-                lastonbeat += beatdur;
-            }
 
-            //same for the last offbeat
-            else if (IsOffbeat == false)
-            {
-                lastoffbeat += beatdur;
-            }
-            //make bg stepswitchers step on beats or offbeats depending on if they should or not
-            // (aka CPU logic)
-            if (IsOffbeat == true && StepOnOffbeats == true)
+            /* CPU LOGIC START
+            I'm trying to figure out my own slightly spaghettified code. God I am bad, dude...
+            */
+            if (StepOnOffbeats == true)
             {
                 foreach (GameObject switcher in BackgroundSwitchers)
                 {
@@ -65,8 +57,9 @@ public class Ticko : MonoBehaviour
                 }
 
             }
-            else if (IsOffbeat == false && StepOnOffbeats == false)
+            else if (StepOnOffbeats == false)
             {
+                //if not offbeat
                 foreach (GameObject switcher in BackgroundSwitchers)
                 {
                     switcher.GetComponent<Step>().OnBeatStep();
@@ -75,8 +68,30 @@ public class Ticko : MonoBehaviour
             }
 
         }
-
         //debug - show info I need
-        OSNumber.text = beatcount.ToString() + "\n" + (GetComponent<Conductor>().songposition + offset).ToString() + "\n" + onbeats.ToString() + "\n" + (GetComponent<Conductor>().songposition + offset).ToString() + "\n" + (pastbeat - (0.3 * halfbeatdur)).ToString();
+        OSNumber.text = beatcount.ToString() + "\n" + (GetComponent<Conductor>().songposition + offset).ToString() + "\n" + onbeats.ToString() + "\n" + (GetComponent<Conductor>().songposition + offset).ToString() + "\n" + (pastbeat - (0.3 * (beatdur * beatmultiplier))).ToString();
+    }
+
+    void updateOrientation(byte UpdateOrNot)
+    {
+        if (UpdateOrNot == 0)
+        {
+            if (switchingStep == true)
+            {
+                beatmultiplier = 1;
+                StepOnOffbeats = !StepOnOffbeats;
+                switchingStep = false;
+                }
+            else
+            {
+                pastbeat += (beatdur * beatmultiplier);
+            }
+        }
+        if (UpdateOrNot == 1)
+        {
+            switchingStep = true;
+            beatmultiplier = 0.5f;
+            pastbeat -= (beatdur * beatmultiplier);
+        }
     }
 }

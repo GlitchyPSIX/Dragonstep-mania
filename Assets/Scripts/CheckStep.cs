@@ -5,15 +5,15 @@ using UnityEngine.UI;
 
 public class CheckStep : MonoBehaviour
 {
-    public float halfbeatdur;
+    public float beatMultiplier;
     public float beatdur;
     public Text OSText;
 
     // Use this for initialization
     void Start()
     {
-        beatdur = GetComponent<Ticko>().beatdur;
-        halfbeatdur = GetComponent<Ticko>().halfbeatdur;
+        beatdur = GetComponent<Ticko>().beatdur * GetComponent<Ticko>().beatmultiplier;
+        beatMultiplier = GetComponent<Ticko>().beatmultiplier;
     }
 
     public bool isOnTime(float margin, float beattime, float position = 999)
@@ -31,6 +31,7 @@ public class CheckStep : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        beatdur = GetComponent<Ticko>().beatdur * GetComponent<Ticko>().beatmultiplier;
         //WIP - add time window for the player to be able to step
         // Ignore for now, trying to fully understand what fizzd-sensei recommended me
         //IT SEEMS THAT I WAS AN IDIOT AND I UH
@@ -40,19 +41,19 @@ public class CheckStep : MonoBehaviour
         {
             if (
                     (
-                        (GetComponent<Conductor>().songposition < (GetComponent<Ticko>().lastonbeat + (0.4f * beatdur))
+                        (GetComponent<Conductor>().songposition < (GetComponent<Ticko>().pastbeat + (0.25f * beatdur))
                         )
                             ||
-                        (GetComponent<Conductor>().songposition > (GetComponent<Ticko>().lastonbeat + (0.75f * beatdur))
+                        (GetComponent<Conductor>().songposition > (GetComponent<Ticko>().pastbeat + (0.75f * beatdur))
                         )
                     )
                 )
             {
-                if (!(GetComponent<Ticko>().IsOffbeat) && !(GetComponent<Ticko>().StepOnOffbeats))
+                if (!(GetComponent<Ticko>().StepOnOffbeats))
                 {
                     GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatStep();
                 }
-                else if ((GetComponent<Ticko>().IsOffbeat) && (GetComponent<Ticko>().StepOnOffbeats))
+                else if ((GetComponent<Ticko>().StepOnOffbeats))
                 {
                     GameObject.FindWithTag("Player").GetComponent<Step>().OffBeatStep();
                 }

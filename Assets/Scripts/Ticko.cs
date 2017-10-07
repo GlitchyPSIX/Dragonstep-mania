@@ -23,7 +23,7 @@ public class Ticko : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        //Specify beatduration and half-beat duration (why even?) 
+        //Specify beatduration and background stepswitchers
         beatmultiplier = 1f;
         beatdur = (60 / GetComponent<Conductor>().bpm);
         //for every background stepswitcher
@@ -33,13 +33,13 @@ public class Ticko : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // debug - press A to make the BGswitchers switch to offbeat
+        // debug - press A to make the whole game orientation switch to offbeat
         if (Input.GetKeyDown("a"))
         {
             updateOrientation(1);
         }
 
-        // every beat...
+        // every beat (With the multiplier in action, probably gonna use this for swing beats)
         if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
         {
             updateOrientation(0);

@@ -160,7 +160,8 @@ MonoBehaviour:
   hm: {fileID: 8300000, guid: 3145d04b00aee474a97c8730119fba94, type: 3}
   hah: {fileID: 8300000, guid: 2873c4a2dc6334447a53d9c0e2a884b5, type: 3}
   boh: {fileID: 8300000, guid: 327f2160487a0544892a78111c5c5519, type: 3}
-  cowbell: {fileID: 0}
+  cowbell: {fileID: 8300000, guid: 357a611488310dd41b293b6269c126d3, type: 3}
+  miss: {fileID: 8300000, guid: 5e03490c1ac5958498fe2e34c0a62932, type: 3}
 --- !u!212 &212727390076994340
 SpriteRenderer:
   m_ObjectHideFlags: 1

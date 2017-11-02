@@ -17,6 +17,7 @@ public class Step : MonoBehaviour
     public AudioClip hah;
     public AudioClip boh;
     public AudioClip cowbell;
+    public AudioClip miss;
 
     // Use this for initialization
     void Start()
@@ -67,10 +68,10 @@ public class Step : MonoBehaviour
 
         public void OffBeatMiss()
     {
-        ac.Play("X_OffBeat");
+        ac.Play("X_Offbeat");
         if (gameObject.CompareTag("Player") == true)
         {
-            asource.clip = march1;
+            asource.clip = miss;
             asource.Play();
         }
     }

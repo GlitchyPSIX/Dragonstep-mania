@@ -16,27 +16,10 @@ public class CheckStep : MonoBehaviour
         beatMultiplier = GetComponent<Ticko>().beatmultiplier;
     }
 
-    public bool isOnTime(float margin, float beattime, float position = 999)
-    {
-
-        if (position == 999)
-        {
-            position = GetComponent<Conductor>().songposition;
-        }
-
-        return Mathf.Abs(position - beattime) < margin;
-
-    }
-
     // Update is called once per frame
     void Update()
     {
         beatdur = GetComponent<Ticko>().beatdur * GetComponent<Ticko>().beatmultiplier;
-        //WIP - add time window for the player to be able to step
-        // Ignore for now, trying to fully understand what fizzd-sensei recommended me
-        //IT SEEMS THAT I WAS AN IDIOT AND I UH
-        //WHY DID I EVEN RE-REFERENCE THE VALUES FROM TICKO WTF
-        // I'm sure that contributes to calculation lag
         if (Input.GetButtonDown("Step"))
         {
             if (
@@ -59,14 +42,18 @@ public class CheckStep : MonoBehaviour
                 }
                 else if ((GetComponent<Ticko>().IsOffbeat) && !(GetComponent<Ticko>().StepOnOffbeats))
                 {
-                    //No hacer nada (Do nothing)
+                    // Nothing
                 }
+            }
+            else
+            {
+                GameObject.FindWithTag("Player").GetComponent<Step>().OffBeatMiss();
             }
             // CanStep = true;
         }
         else
         {
-            // CanStep = false;
+
         }
         // OSText.text = (calculation1 - calculation2).ToString();
     }

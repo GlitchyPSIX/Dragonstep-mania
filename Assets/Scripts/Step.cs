@@ -55,16 +55,15 @@ public class Step : MonoBehaviour
         }
     }    
     
-    //Uncomment once you add the onbeat missing animation
-    // public void OnBeatMiss()
-    // {
-    //     ac.Play("X_OnBeat");
-    //     if (gameObject.CompareTag("Player") == true)
-    //     {
-    //         asource.clip = march1;
-    //         asource.Play();
-    //     }
-    // }
+    public void OnBeatMiss()
+    {
+        ac.Play("X_OnBeat");
+        if (gameObject.CompareTag("Player") == true)
+        {
+            asource.clip = march1;
+            asource.Play();
+        }
+    }
 
         public void OffBeatMiss()
     {

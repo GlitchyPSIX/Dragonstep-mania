@@ -57,7 +57,7 @@ public class Step : MonoBehaviour
     
     public void OnBeatMiss()
     {
-        ac.Play("X_OnBeat");
+        ac.Play("X_Onbeat");
         if (gameObject.CompareTag("Player") == true)
         {
             asource.clip = march1;

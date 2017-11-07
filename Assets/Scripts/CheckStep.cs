@@ -9,8 +9,8 @@ public class CheckStep : MonoBehaviour
     public float beatdur;
     public float pastHitPos;
     public Text OSText;
-    bool isHurt = false;
-    byte hurtOrientation = 0;
+    public bool isHurt = false;
+    public byte hurtOrientation = 0;
 
     /*
     HURTING ORIENTATION GUIDE:
@@ -67,6 +67,8 @@ public class CheckStep : MonoBehaviour
             // CanStep = true;
         }
         CheckMiss();
+        OSText.text = "Beat count:" + GetComponent<Ticko>().beatcount.ToString() + "\n" + "Song offset: " + (GetComponent<Conductor>().songposition + GetComponent<Ticko>().offset).ToString() + "\n" + "Last beat: " + (GetComponent<Ticko>().pastbeat - (0.3 * (beatdur * GetComponent<Ticko>().beatmultiplier))).ToString() + "\n Is hurt?: " + GetComponent<CheckStep>().isHurt.ToString() + "\n Hurt Orientation: " + GetComponent<CheckStep>().hurtOrientation.ToString();
+
     }
     void CheckMiss()
     {
@@ -92,20 +94,29 @@ public class CheckStep : MonoBehaviour
         }
         else if (isHurt)
         {
-            pastHitPos = GetComponent<Ticko>().pastbeat;
-            if (GetComponent<Conductor>().songposition >= (pastHitPos + (1.05f * beatdur)))
+            if (pastHitPos < GetComponent<Conductor>().songposition)
+            {
+                pastHitPos = GetComponent<Ticko>().pastbeat;
+            }
+            else
+            {
+                pastHitPos += beatdur;
+            }
+
+            if (GetComponent<Conductor>().songposition >= (pastHitPos + (1.03f * beatdur)))
             {
                 missCounter++;
-                if (!(GetComponent<Ticko>().StepOnOffbeats) && hurtOrientation == 1)
+                if (hurtOrientation == 1)
                 {
                     GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatMiss();
                     hurtOrientation = 0;
                 }
-                else if ((GetComponent<Ticko>().StepOnOffbeats) && hurtOrientation == 0)
+                if (hurtOrientation == 0)
                 {
                     GameObject.FindWithTag("Player").GetComponent<Step>().OffBeatMiss();
                     hurtOrientation = 1;
                 }
+
             }
         }
     }

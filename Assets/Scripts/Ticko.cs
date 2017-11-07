@@ -51,6 +51,7 @@ public class Ticko : MonoBehaviour
             */
             if (StepOnOffbeats == true)
             {
+                //if offbeat
                 foreach (GameObject switcher in BackgroundSwitchers)
                 {
                     switcher.GetComponent<Step>().OffBeatStep();
@@ -68,20 +69,19 @@ public class Ticko : MonoBehaviour
             }
 
         }
-        //debug - show info I need
-        OSNumber.text = beatcount.ToString() + "\n" + (GetComponent<Conductor>().songposition + offset).ToString() + "\n" + onbeats.ToString() + "\n" + (GetComponent<Conductor>().songposition + offset).ToString() + "\n" + (pastbeat - (0.3 * (beatdur * beatmultiplier))).ToString();
     }
 
     void updateOrientation(byte UpdateOrNot)
     {
         if (UpdateOrNot == 0)
         {
+            //bring back the multiplier to one if we're transitioning, offbeat transition stopped
             if (switchingStep == true)
             {
                 beatmultiplier = 1;
                 StepOnOffbeats = !StepOnOffbeats;
                 switchingStep = false;
-                }
+            }
             else
             {
                 pastbeat += (beatdur * beatmultiplier);
@@ -89,6 +89,7 @@ public class Ticko : MonoBehaviour
         }
         if (UpdateOrNot == 1)
         {
+            //halve the multiplier for a bit so it goes into the backbeat
             switchingStep = true;
             beatmultiplier = 0.5f;
             pastbeat -= (beatdur * beatmultiplier);

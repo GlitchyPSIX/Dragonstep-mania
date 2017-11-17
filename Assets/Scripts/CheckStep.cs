@@ -91,7 +91,7 @@ public class CheckStep : MonoBehaviour
         }
         else if (!isHurt)
         {
-            if (GetComponent<Conductor>().songposition >= (pastHitPos + (1.05f * beatdur)))
+            if (GetComponent<Conductor>().songposition >= (pastHitPos + (0.99f * beatdur)))
             {
                 isHurt = true;
                 missCounter++;

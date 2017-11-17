@@ -33,8 +33,6 @@ public class CheckStep : MonoBehaviour
     void Update()
     {
         beatdur = GetComponent<Ticko>().beatdur * GetComponent<Ticko>().beatmultiplier;
-        timeDifference = pastHitPos - GetComponent<Ticko>().pastbeat;
-
         if (Input.GetButtonDown("Step"))
         {
             if (

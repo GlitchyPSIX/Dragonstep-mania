@@ -67,12 +67,31 @@ public class CheckStep : MonoBehaviour
             // CanStep = true;
         }
         CheckMiss();
-        OSText.text = "Beat count:" + GetComponent<Ticko>().beatcount.ToString() + "\n" + "Song offset: " + (GetComponent<Conductor>().songposition + GetComponent<Ticko>().offset).ToString() + "\n" + "Last beat: " + (GetComponent<Ticko>().pastbeat - (0.3 * (beatdur * GetComponent<Ticko>().beatmultiplier))).ToString() + "\n Is hurt?: " + GetComponent<CheckStep>().isHurt.ToString() + "\n Hurt Orientation: " + GetComponent<CheckStep>().hurtOrientation.ToString();
+        OSText.text = "Beat count:" + GetComponent<Ticko>().beatcount.ToString() + "\n" + "Song offset: " + (GetComponent<Conductor>().songposition + GetComponent<Ticko>().offset).ToString() + "\nLast Hit: " + pastHitPos.ToString() + "\n" + "Last beat: " + (GetComponent<Ticko>().pastbeat - (0.3 * (beatdur * GetComponent<Ticko>().beatmultiplier))).ToString() + "\n Is hurt?: " + GetComponent<CheckStep>().isHurt.ToString() + "\n Hurt Orientation: " + GetComponent<CheckStep>().hurtOrientation.ToString();
 
     }
     void CheckMiss()
     {
-        if (!isHurt)
+        if (isHurt)
+        {
+            if (GetComponent<Conductor>().songposition >= (pastHitPos + beatdur))
+            {
+                pastHitPos += beatdur;
+                missCounter++;
+                if (hurtOrientation == 1 && !(GetComponent<Ticko>().StepOnOffbeats))
+                {
+                    GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatMiss();
+                    hurtOrientation = 0;
+                }
+                else if (hurtOrientation == 0 && (GetComponent<Ticko>().StepOnOffbeats))
+                {
+                    GameObject.FindWithTag("Player").GetComponent<Step>().OffBeatMiss();
+                    hurtOrientation = 1;
+                }
+
+            }
+        }
+        else if (!isHurt)
         {
             if (GetComponent<Conductor>().songposition >= (pastHitPos + (1.05f * beatdur)))
             {
@@ -90,33 +109,6 @@ public class CheckStep : MonoBehaviour
                     GameObject.FindWithTag("Player").GetComponent<Step>().OffBeatMiss();
                     hurtOrientation = 1;
                 }
-            }
-        }
-        else if (isHurt)
-        {
-            if (pastHitPos < GetComponent<Conductor>().songposition)
-            {
-                pastHitPos = GetComponent<Ticko>().pastbeat;
-            }
-            else
-            {
-                pastHitPos += beatdur;
-            }
-
-            if (GetComponent<Conductor>().songposition >= (pastHitPos + (1.03f * beatdur)))
-            {
-                missCounter++;
-                if (hurtOrientation == 1)
-                {
-                    GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatMiss();
-                    hurtOrientation = 0;
-                }
-                if (hurtOrientation == 0)
-                {
-                    GameObject.FindWithTag("Player").GetComponent<Step>().OffBeatMiss();
-                    hurtOrientation = 1;
-                }
-
             }
         }
     }

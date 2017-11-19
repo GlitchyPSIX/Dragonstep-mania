@@ -14,6 +14,7 @@ public class Ticko : MonoBehaviour
     public bool StepOnOffbeats = false;
     GameObject[] BackgroundSwitchers;
 
+    // This class holds the CPU logic (step each beat), and the step switch.
 
     // Use this for initialization
     void Start()
@@ -31,13 +32,13 @@ public class Ticko : MonoBehaviour
         // testing purposes - press A to make the whole game orientation switch to offbeat
         if (Input.GetKeyDown("a"))
         {
-            updateOrientation(true);
+            switchStep(true);
         }
 
         // every beat (With the multiplier in action, probably gonna use this for swing beats)
         if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
         {
-            updateOrientation(false);
+            switchStep(false);
             // ^ makes sure the beat is 1x when required (used to switch to offbeat)
             beatcount += (1f * beatmultiplier);
 
@@ -64,10 +65,9 @@ public class Ticko : MonoBehaviour
 
         }
     }
-
-    void updateOrientation(bool SwitchStep)
+    public void switchStep(bool halveBeat)
     {
-        if (SwitchStep == false)
+        if (halveBeat == false)
         {
             //bring back the multiplier to one if we're transitioning, offbeat transition stopped
             if (switchingStep == true)
@@ -81,8 +81,7 @@ public class Ticko : MonoBehaviour
                 pastbeat += (beatdur * beatmultiplier);
             }
         }
-
-        if (SwitchStep == true)
+        else if (halveBeat == true)
         {
             //halve the multiplier for a "beat", reduce the last beat by half a beat, so it goes into the backbeat
             switchingStep = true;

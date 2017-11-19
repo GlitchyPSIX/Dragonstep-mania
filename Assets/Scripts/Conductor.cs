@@ -5,8 +5,9 @@ using UnityEngine;
 public class Conductor : MonoBehaviour
 {
 
+    //This class holds the beat duration.
+
     public float bpm = 120;
-    public float crotchet;
     public float offset = 0.2f;
     public float songposition;
     public AudioSource song;
@@ -15,7 +16,6 @@ public class Conductor : MonoBehaviour
     void Start()
     {
         song = GetComponent<AudioSource>();
-        crotchet = 60 / bpm;
     }
 	
     // Update is called once per frame

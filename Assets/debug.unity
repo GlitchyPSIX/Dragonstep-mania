@@ -433,7 +433,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   beatMultiplier: 0
   beatdur: 0
+  pastHitPos: 0
   OSText: {fileID: 2134842103}
+  isHurt: 0
+  hurtOrientation: 0
 --- !u!1 &901591111
 GameObject:
   m_ObjectHideFlags: 0
@@ -599,7 +602,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1291242231
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1219,7 +1222,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 110.16, y: 44.000103}
+  m_AnchoredPosition: {x: -196, y: 79}
   m_SizeDelta: {x: 171, y: 161}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2134842103
@@ -1248,7 +1251,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 1
+    m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0

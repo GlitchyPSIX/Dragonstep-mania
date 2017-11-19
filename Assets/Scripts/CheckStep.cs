@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/* 
+
+This file checks for misses and if you've stepped right or wrongly.
+
+*/
 public class CheckStep : MonoBehaviour
 {
     public float beatMultiplier;
@@ -45,6 +50,7 @@ public class CheckStep : MonoBehaviour
                     )
                 )
             {
+                hitCounter++;
                 if (!(GetComponent<Ticko>().StepOnOffbeats)) //If onbeat
                 {
                     GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatStep();
@@ -65,14 +71,21 @@ public class CheckStep : MonoBehaviour
             // CanStep = true;
         }
         CheckMiss();
-        OSText.text = "Beat count:" + GetComponent<Ticko>().beatcount.ToString() + "\n" + "Song offset: " + (GetComponent<Conductor>().songposition + GetComponent<Ticko>().offset).ToString() + "\nLast Hit: " + pastHitPos.ToString() + "\n" + "Last beat: " + (GetComponent<Ticko>().pastbeat - (0.3 * (beatdur * GetComponent<Ticko>().beatmultiplier))).ToString() + "\n Is hurt?: " + GetComponent<CheckStep>().isHurt.ToString() + "\n Hurt Orientation: " + GetComponent<CheckStep>().hurtOrientation.ToString();
+        OSText.text = "Beat count:" + GetComponent<Ticko>().beatcount.ToString() +
+        "\n" + "Song offset: " + (GetComponent<Conductor>().songposition + GetComponent<Ticko>().offset).ToString() +
+        "\nLast Hit: " + pastHitPos.ToString() + "\n"
+        + "Last beat: " + (GetComponent<Ticko>().pastbeat - (0.3 * (beatdur * GetComponent<Ticko>().beatmultiplier))).ToString()
+        + "\n Is hurt?: " + GetComponent<CheckStep>().isHurt.ToString() +
+        "\n Hurt Orientation: " + GetComponent<CheckStep>().hurtOrientation.ToString()
+        + "\n Misses: " + GetComponent<CheckStep>().missCounter.ToString()
+        + "\n Sucessful hits: " + GetComponent<CheckStep>().hitCounter.ToString();
 
     }
     void CheckMiss()
     {
         if (isHurt)
         {
-            if (GetComponent<Conductor>().songposition >= (pastHitPos + beatdur))
+            if (GetComponent<Conductor>().songposition > (pastHitPos + beatdur))
             {
                 pastHitPos += beatdur;
                 missCounter++;
@@ -91,7 +104,7 @@ public class CheckStep : MonoBehaviour
         }
         else if (!isHurt)
         {
-            if (GetComponent<Conductor>().songposition >= (pastHitPos + (0.99f * beatdur)))
+            if (GetComponent<Conductor>().songposition > (pastHitPos + (1.15f * beatdur)))
             {
                 isHurt = true;
                 missCounter++;

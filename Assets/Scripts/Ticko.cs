@@ -33,21 +33,20 @@ public class Ticko : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // debug - press A to make the whole game orientation switch to offbeat
+        // testing purposes - press A to make the whole game orientation switch to offbeat
         if (Input.GetKeyDown("a"))
         {
-            updateOrientation(1);
+            updateOrientation(true);
         }
 
         // every beat (With the multiplier in action, probably gonna use this for swing beats)
         if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
         {
-            updateOrientation(0);
-            beatcount += 1f;
-
+            updateOrientation(false);
+            // ^ makes sure the beat is 1x when required (used to switch to offbeat)
+            beatcount += (1f * beatmultiplier);
 
             /* CPU LOGIC START
-            I'm trying to figure out my own slightly spaghettified code. God I am bad, dude...
             */
             if (StepOnOffbeats == true)
             {
@@ -71,9 +70,9 @@ public class Ticko : MonoBehaviour
         }
     }
 
-    void updateOrientation(byte UpdateOrNot)
+    void updateOrientation(bool SwitchStep)
     {
-        if (UpdateOrNot == 0)
+        if (SwitchStep == false)
         {
             //bring back the multiplier to one if we're transitioning, offbeat transition stopped
             if (switchingStep == true)
@@ -82,14 +81,15 @@ public class Ticko : MonoBehaviour
                 StepOnOffbeats = !StepOnOffbeats;
                 switchingStep = false;
             }
-            else
+            else //if it's already off-transition
             {
                 pastbeat += (beatdur * beatmultiplier);
             }
         }
-        if (UpdateOrNot == 1)
+
+        if (SwitchStep == true)
         {
-            //halve the multiplier for a bit so it goes into the backbeat
+            //halve the multiplier for a "beat", reduce the last beat by half a beat, so it goes into the backbeat
             switchingStep = true;
             beatmultiplier = 0.5f;
             pastbeat -= (beatdur * beatmultiplier);

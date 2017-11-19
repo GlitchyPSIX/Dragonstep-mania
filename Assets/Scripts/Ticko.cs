@@ -7,17 +7,12 @@ public class Ticko : MonoBehaviour
 {
     private bool switchingStep;
     public float pastbeat = 0f;
-    public float lastonbeat = 0f;
-    public float lastoffbeat = 0f;
     public float offset = 0;
     public float beatcount = 0;
     public float beatmultiplier;
     public float beatdur;
-    public Text OSNumber;
-    public bool IsOffbeat = false;
     public bool StepOnOffbeats = false;
     GameObject[] BackgroundSwitchers;
-    int onbeats;
 
 
     // Use this for initialization

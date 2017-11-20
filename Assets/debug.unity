@@ -301,8 +301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53b61190b76e02040a537b6899fe0720, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bpm: 162
-  crotchet: 0
+  bpm: 130
   offset: 0
   songposition: 0
   song: {fileID: 0}
@@ -315,7 +314,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 5361a82df6e349f4096b09dabd1bb24d, type: 3}
+  m_audioClip: {fileID: 8300000, guid: a9eb795a5282d6a42abb812a500e9c3b, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.741
   m_Pitch: 1
@@ -411,14 +410,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pastbeat: 0
-  lastonbeat: 0
-  lastoffbeat: 0
   offset: 0
   beatcount: 0
   beatmultiplier: 0
   beatdur: 0
-  OSNumber: {fileID: 1291242232}
-  IsOffbeat: 0
   StepOnOffbeats: 0
 --- !u!114 &822360789
 MonoBehaviour:

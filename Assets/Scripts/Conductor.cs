@@ -6,6 +6,7 @@ public class Conductor : MonoBehaviour
 {
 
     //This class holds the beat duration.
+    //thanks, fizzd, I owe you a big one.
 
     public float bpm = 120;
     public float offset = 0.2f;
@@ -17,7 +18,7 @@ public class Conductor : MonoBehaviour
     {
         song = GetComponent<AudioSource>();
     }
-	
+
     // Update is called once per frame
     void Update()
     {

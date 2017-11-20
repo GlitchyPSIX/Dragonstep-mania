@@ -19,6 +19,8 @@ public class Step : MonoBehaviour
     public AudioClip cowbell;
     public AudioClip miss;
 
+    //This clip controls the animations and sound effects for the steps
+
     // Use this for initialization
     void Start()
     {
@@ -29,22 +31,7 @@ public class Step : MonoBehaviour
             asource = GetComponent<AudioSource>();
         }
     }
-	
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown("z") == true)
-        {
-            
-        }
-        if (Input.GetKeyDown("x") == true)
-        if (Input.GetButtonDown("Jump") == true)
-        {
-
-        }
-
-    }
-
+    
     public void OnBeatStep()
     {
         ac.Play("On Beat");

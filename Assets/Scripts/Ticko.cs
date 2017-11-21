@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Ticko : MonoBehaviour
 {
     private bool switchingStep;
-    public float pastbeat = 0f;
+    public double pastbeat = 0d;
     public float offset = 0;
     public float beatcount = 0;
     public float beatmultiplier;
@@ -40,7 +40,7 @@ public class Ticko : MonoBehaviour
         {
             switchStep(false);
             // ^ makes sure the beat is 1x when required (used to switch to offbeat)
-            beatcount += (1f * beatmultiplier);
+            beatcount += (1 * beatmultiplier);
 
             /* CPU LOGIC START
             */

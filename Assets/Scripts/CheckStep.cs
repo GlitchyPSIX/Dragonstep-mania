@@ -12,7 +12,7 @@ public class CheckStep : MonoBehaviour
 {
     public float beatMultiplier;
     public float beatdur;
-    public float pastHitPos;
+    public double pastHitPos;
     public Text OSText;
     public bool isHurt = false;
     public byte hurtOrientation = 0;

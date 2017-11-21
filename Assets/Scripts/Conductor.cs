@@ -10,7 +10,7 @@ public class Conductor : MonoBehaviour
 
     public float bpm = 120;
     public float offset = 0.2f;
-    public float songposition;
+    public double songposition;
     public AudioSource song;
 
     // Use this for initialization
@@ -22,6 +22,6 @@ public class Conductor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        songposition = (float)(song.time) * song.pitch - offset;
+        songposition = (double)(song.time) * song.pitch - offset;
     }
 }

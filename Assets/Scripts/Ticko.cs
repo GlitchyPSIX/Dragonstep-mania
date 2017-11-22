@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Ticko : MonoBehaviour
 {
-    private bool switchingStep;
+    public bool switchingStep;
     public double pastbeat = 0d;
     public float offset = 0;
     public float beatcount = 0;
@@ -13,6 +13,7 @@ public class Ticko : MonoBehaviour
     public float beatdur;
     public bool StepOnOffbeats = false;
     GameObject[] BackgroundSwitchers;
+    Timeline timeline;
 
     // This class holds the CPU logic (step each beat), and the step switch.
 
@@ -24,6 +25,7 @@ public class Ticko : MonoBehaviour
         beatdur = (60 / GetComponent<Conductor>().bpm);
         //for every background stepswitcher
         BackgroundSwitchers = GameObject.FindGameObjectsWithTag("Background");
+        timeline = GetComponent<Timeline>();
     }
 
     // Update is called once per frame
@@ -32,13 +34,13 @@ public class Ticko : MonoBehaviour
         // testing purposes - press A to make the whole game orientation switch to offbeat
         if (Input.GetKeyDown("a"))
         {
-            switchStep(true);
+            timeline.addAction(3, 17);
         }
 
         // every beat (With the multiplier in action, probably gonna use this for swing beats)
         if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
         {
-            switchStep(false);
+            timeline.switchStep(false);
             // ^ makes sure the beat is 1x when required (used to switch to offbeat)
             beatcount += (1 * beatmultiplier);
 
@@ -63,30 +65,6 @@ public class Ticko : MonoBehaviour
 
             }
 
-        }
-    }
-    public void switchStep(bool halveBeat)
-    {
-        if (halveBeat == false)
-        {
-            //bring back the multiplier to one if we're transitioning, offbeat transition stopped
-            if (switchingStep == true)
-            {
-                beatmultiplier = 1;
-                StepOnOffbeats = !StepOnOffbeats;
-                switchingStep = false;
-            }
-            else //if it's already off-transition
-            {
-                pastbeat += (beatdur * beatmultiplier);
-            }
-        }
-        else if (halveBeat == true)
-        {
-            //halve the multiplier for a "beat", reduce the last beat by half a beat, so it goes into the backbeat
-            switchingStep = true;
-            beatmultiplier = 0.5f;
-            pastbeat -= (beatdur * beatmultiplier);
         }
     }
 }

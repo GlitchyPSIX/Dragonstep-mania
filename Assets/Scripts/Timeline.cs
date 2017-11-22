@@ -5,7 +5,7 @@ using UnityEngine;
 public class Timeline : MonoBehaviour
 {
 
-	//This class should hold all the actions that happen at certain times, and perform them in time.
+    //This class should hold all the actions that happen at certain times, and perform them in time.
 
     List<actionElement> actionList;
     Ticko updater;
@@ -22,26 +22,29 @@ public class Timeline : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GetComponent<Conductor>().songposition + updater.offset > updater.pastbeat + (updater.beatdur * updater.beatmultiplier))
-        {
-            foreach (actionElement item in actionList)
-            {
-                if (item.position == updater.beatcount)
-                {
-                    performAction(item.action);
-                    actionList.Remove(item);
-                }
-            }
-        }
+
     }
 
     public void addAction(byte actionType, float position)
     {
-        actionList.Add(new actionElement(position, actionType));
+        actionList.Add(new actionElement(actionType, position));
+        Debug.Log("An event has been added at beat number: " + position.ToString() + "." + "(" + actionType.ToString() + ")");
+    }
+
+    public void checkTimeline()
+    {
+        foreach (actionElement item in actionList)
+        {
+            if (item.position == updater.beatcount)
+            {
+                performAction(item.action);
+            }
+        }
     }
 
     void performAction(byte actionType)
     {
+        Debug.Log("Performing action: " + actionType.ToString());
         if (actionType == 0)
         {
             //Prepare
@@ -65,8 +68,6 @@ public class Timeline : MonoBehaviour
         }
     }
 
-
-
     //ACTIONS START
     #region actions
     public void switchStep(bool halveBeat)
@@ -76,9 +77,9 @@ public class Timeline : MonoBehaviour
             //bring back the multiplier to one if we're transitioning, offbeat transition stopped
             if (updater.switchingStep == true)
             {
-                updater.beatmultiplier = 1;
-                updater.StepOnOffbeats = !updater.StepOnOffbeats;
-                updater.switchingStep = false;
+				updater.StepOnOffbeats = !updater.StepOnOffbeats;
+				updater.beatmultiplier = 1;
+				updater.switchingStep = false;
             }
             else //if it's already off-transition
             {
@@ -88,9 +89,9 @@ public class Timeline : MonoBehaviour
         else if (halveBeat == true)
         {
             //halve the multiplier for a "beat", reduce the last beat by half a beat, so it goes into the backbeat
-            updater.switchingStep = true;
-            updater.beatmultiplier = 0.5f;
-            updater.pastbeat -= (updater.beatdur * updater.beatmultiplier);
+			updater.beatmultiplier = 0.5f;
+			updater.pastbeat -= (updater.beatdur * updater.beatmultiplier);
+			updater.switchingStep = true;
         }
     }
     #endregion
@@ -102,7 +103,7 @@ struct actionElement
     public float position;
     public byte action;
 
-    public actionElement(float pos, byte act)
+    public actionElement(byte act, float pos)
     {
         position = pos;
         action = act;

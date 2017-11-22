@@ -34,16 +34,21 @@ public class Ticko : MonoBehaviour
         // testing purposes - press A to make the whole game orientation switch to offbeat
         if (Input.GetKeyDown("a"))
         {
-            timeline.addAction(3, 17);
+            timeline.addAction(2, 7);
+            timeline.addAction(2, 29.5f);
+        }
+
+        if (Input.GetKeyDown("s"))
+        {
+            //emergency switch
+            timeline.switchStep(true);
         }
 
         // every beat (With the multiplier in action, probably gonna use this for swing beats)
         if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
         {
-            timeline.switchStep(false);
-            // ^ makes sure the beat is 1x when required (used to switch to offbeat)
             beatcount += (1 * beatmultiplier);
-
+            // ^ makes sure the beat is 1x when required (used to switch to offbeat)
             /* CPU LOGIC START
             */
             if (StepOnOffbeats == true)
@@ -64,7 +69,8 @@ public class Ticko : MonoBehaviour
                 }
 
             }
-
+            timeline.switchStep(false);
+            timeline.checkTimeline();
         }
     }
 }

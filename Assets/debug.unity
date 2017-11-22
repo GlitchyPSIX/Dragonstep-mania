@@ -283,6 +283,7 @@ GameObject:
   - component: {fileID: 822360785}
   - component: {fileID: 822360788}
   - component: {fileID: 822360789}
+  - component: {fileID: 822360790}
   m_Layer: 0
   m_Name: BGM
   m_TagString: GameController
@@ -410,6 +411,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c980290ccf5a7cc46b14eca180f260b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  switchingStep: 0
   pastbeat: 0
   offset: 0
   beatcount: 0
@@ -433,6 +435,17 @@ MonoBehaviour:
   OSText: {fileID: 2134842103}
   isHurt: 0
   hurtOrientation: 0
+--- !u!114 &822360790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 822360784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d44dda77f3b7a246a7da01c8ea9dbbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &901591111
 GameObject:
   m_ObjectHideFlags: 0

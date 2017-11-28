@@ -15,6 +15,7 @@ public class CheckStep : MonoBehaviour
     public double pastHitPos;
     public Text OSText;
     public bool isHurt = false;
+    public bool canStep = true;
     public byte hurtOrientation = 0;
     /*
     HURTING ORIENTATION GUIDE:
@@ -39,31 +40,20 @@ public class CheckStep : MonoBehaviour
             //if inside the margin
             if (
                     (
-                        (GetComponent<Conductor>().songposition < (GetComponent<Ticko>().pastbeat + (0.25f * beatdur))
+                        ((GetComponent<Conductor>().songposition < (GetComponent<Ticko>().pastbeat + (0.25f * beatdur))
                         )
                             ||
                         (GetComponent<Conductor>().songposition > (GetComponent<Ticko>().pastbeat + (0.75f * beatdur))
-                        )
+                        ))
                     )
                 )
             {
-                //add a successful hit
-                hitCounter++;
-                isHurt = false;
-                if (!(GetComponent<Ticko>().StepOnOffbeats)) //If onbeat
-                {
-                    GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatStep();
-                    pastHitPos = GetComponent<Conductor>().songposition;
-                }
-                else if ((GetComponent<Ticko>().StepOnOffbeats)) //If at backbeat
-                {
-                    GameObject.FindWithTag("Player").GetComponent<Step>().OffBeatStep();
-                    pastHitPos = GetComponent<Conductor>().songposition;
-                }
+                performStep();
             }
             else
             {
                 //if outside margin (Mis-press)
+                missCounter++;
             }
         }
         //check for miss each frame
@@ -79,52 +69,77 @@ public class CheckStep : MonoBehaviour
         + "\n Sucessful hits: " + GetComponent<CheckStep>().hitCounter.ToString();
 
     }
+
+    public void performStep()
+    {
+        //add a successful hit
+        hitCounter++;
+        isHurt = false;
+        if (!(GetComponent<Ticko>().StepOnOffbeats)) //If onbeat
+        {
+            GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatStep();
+            pastHitPos = GetComponent<Conductor>().songposition;
+        }
+        else if ((GetComponent<Ticko>().StepOnOffbeats)) //If at backbeat
+        {
+            GameObject.FindWithTag("Player").GetComponent<Step>().OffBeatStep();
+            pastHitPos = GetComponent<Conductor>().songposition;
+        }
+    }
+
     void CheckMiss()
     {
-        if (isHurt)
+        if (GetComponent<Timeline>().autoMode == false)
         {
-            //if hurt, and the songposition already progressed a beat * multiplier
-            if (GetComponent<Conductor>().songposition > (pastHitPos + beatdur))
+            if (isHurt)
             {
-                //increment the past hit by a beat (AUTO)
-                pastHitPos += beatdur;
-                //add miss
-                missCounter++;
-                //this block below will make the orientation switch in case the step is switched
-                if (hurtOrientation == 1 && !(GetComponent<Ticko>().StepOnOffbeats))
+                //if hurt, and the songposition already progressed a beat * multiplier
+                if (GetComponent<Conductor>().songposition > (pastHitPos + beatdur))
                 {
-                    GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatMiss();
-                    hurtOrientation = 0;
-                }
-                else if (hurtOrientation == 0 && (GetComponent<Ticko>().StepOnOffbeats))
-                {
-                    GameObject.FindWithTag("Player").GetComponent<Step>().OffBeatMiss();
-                    hurtOrientation = 1;
-                }
+                    //increment the past hit by a beat (AUTO)
+                    pastHitPos += beatdur;
+                    //add miss
+                    missCounter++;
+                    //this block below will make the orientation switch in case the step is switched
+                    if (hurtOrientation == 1 && !(GetComponent<Ticko>().StepOnOffbeats))
+                    {
+                        GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatMiss();
+                        hurtOrientation = 0;
+                    }
+                    else if (hurtOrientation == 0 && (GetComponent<Ticko>().StepOnOffbeats))
+                    {
+                        GameObject.FindWithTag("Player").GetComponent<Step>().OffBeatMiss();
+                        hurtOrientation = 1;
+                    }
 
+                }
+            }
+            else if (!isHurt)
+            {
+                //if NOT hurt, wait a little bit after the last beat (chance window)
+                if (GetComponent<Conductor>().songposition > (pastHitPos + (1.15f * beatdur)))
+                {
+                    //add miss and perform correct animation
+                    isHurt = true;
+                    missCounter++;
+                    pastHitPos = GetComponent<Ticko>().pastbeat;
+                    if (!(GetComponent<Ticko>().StepOnOffbeats))
+                    {
+                        GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatMiss();
+                        hurtOrientation = 0;
+
+                    }
+                    else if ((GetComponent<Ticko>().StepOnOffbeats))
+                    {
+                        GameObject.FindWithTag("Player").GetComponent<Step>().OffBeatMiss();
+                        hurtOrientation = 1;
+                    }
+                }
             }
         }
-        else if (!isHurt)
+        else if (GetComponent<Timeline>().autoMode == true)
         {
-            //if NOT hurt, wait a little bit after the last beat (chance window)
-            if (GetComponent<Conductor>().songposition > (pastHitPos + (1.15f * beatdur)))
-            {
-                //add miss and perform correct animation
-                isHurt = true;
-                missCounter++;
-                pastHitPos = GetComponent<Ticko>().pastbeat;
-                if (!(GetComponent<Ticko>().StepOnOffbeats))
-                {
-                    GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatMiss();
-                    hurtOrientation = 0;
-
-                }
-                else if ((GetComponent<Ticko>().StepOnOffbeats))
-                {
-                    GameObject.FindWithTag("Player").GetComponent<Step>().OffBeatMiss();
-                    hurtOrientation = 1;
-                }
-            }
+            //AUTO is enabled, no miss check should take in place.
         }
     }
 

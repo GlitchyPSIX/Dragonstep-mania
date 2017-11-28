@@ -10,6 +10,7 @@ public class Timeline : MonoBehaviour
     List<actionElement> actionList;
     Ticko updater;
     Conductor conductor;
+    public bool autoMode = true;
 
     // Use this for initialization
     void Start()

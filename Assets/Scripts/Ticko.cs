@@ -44,9 +44,17 @@ public class Ticko : MonoBehaviour
             timeline.switchStep(true);
         }
 
+        if (Input.GetKeyDown("d")){
+            timeline.autoMode = !timeline.autoMode;
+        }
+
         // every beat (With the multiplier in action, probably gonna use this for swing beats)
         if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
         {
+            // AUTO / PREPARE
+            if (timeline.autoMode == true){
+                GetComponent<CheckStep>().performStep();
+            }
             beatcount += (1 * beatmultiplier);
             // ^ makes sure the beat is 1x when required (used to switch to offbeat)
             /* CPU LOGIC START
@@ -69,6 +77,7 @@ public class Ticko : MonoBehaviour
                 }
 
             }
+            
             timeline.switchStep(false);
             timeline.checkTimeline();
         }

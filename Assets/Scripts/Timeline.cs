@@ -8,6 +8,7 @@ public class Timeline : MonoBehaviour
     //This class should hold all the actions that happen at certain times, and perform them in time.
 
     List<actionElement> actionList;
+    List<actionElement> surfaceActionList;
     Ticko updater;
     Conductor conductor;
     public bool autoMode = true;
@@ -16,6 +17,7 @@ public class Timeline : MonoBehaviour
     void Start()
     {
         actionList = new List<actionElement>();
+        surfaceActionList = new List<actionElement>();
         updater = GetComponent<Ticko>();
         conductor = GetComponent<Conductor>();
     }
@@ -28,15 +30,31 @@ public class Timeline : MonoBehaviour
 
     public void addAction(byte actionType, float position, string argument1 = "")
     {
-        actionList.Add(new actionElement(actionType, position, argument1));
-        Debug.Log("An event has been added at beat number: " + position.ToString() + "." + "(" + actionType.ToString() + ")");
+        if (argument1 == "")
+        {
+            actionList.Add(new actionElement(actionType, position, argument1));
+            Debug.Log("An event has been added at beat number: " + position.ToString() + "." + "(" + actionType.ToString() + ")");
+        }
+        else if (argument1 != "")
+        {
+            surfaceActionList.Add(new actionElement(actionType, position, argument1));
+            Debug.Log("An event has been added at beat number: " + position.ToString() + "." + "(" + actionType.ToString() + ") [SURFACE EVENT]");
+        }
+        
     }
 
     public void checkTimeline()
     {
         foreach (actionElement item in actionList)
         {
-            if (item.position == (updater.beatcount - (1*updater.beatmultiplier)))
+            if (item.position == (updater.beatcount + (1*updater.beatmultiplier)))
+            {
+                performAction(item.action, item.arg1);
+            }
+        }
+        foreach (actionElement item in surfaceActionList)
+        {
+            if (item.position == (updater.beatcount + (1*updater.beatmultiplier)))
             {
                 performAction(item.action, item.arg1);
             }
@@ -46,44 +64,44 @@ public class Timeline : MonoBehaviour
     void performAction(byte actionType, string argument1 = "")
     {
         Debug.Log("Performing action: " + actionType.ToString());
+        if (actionType == 8)
+        {
+            //playSound
+            playSound(argument1);
+        }
         if (actionType == 0)
         {
             //Prepare
         }
-        else if (actionType == 1)
+        if (actionType == 1)
         {
             //Stop prepare
         }
-        else if (actionType == 2)
+        if (actionType == 2)
         {
             //Switch beat
             switchStep(true);
         }
-        else if (actionType == 3)
+        if (actionType == 3)
         {
             //Swing tail
         }
-        else if (actionType == 4)
+        if (actionType == 4)
         {
             //Deny step (Also affects CPU)
         }
-        else if (actionType == 5)
+        if (actionType == 5)
         {
             //Allow step (Also affects CPU)
         }
-        else if (actionType == 6)
+        if (actionType == 6)
         {
             //Toggle Auto
             autoMode = !autoMode;
         }
-        else if (actionType == 7)
+        if (actionType == 7)
         {
             //End game
-        }
-        else if (actionType == 8)
-        {
-            //playSound
-            playSound(argument1);
         }
     }
 

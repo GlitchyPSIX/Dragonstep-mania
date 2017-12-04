@@ -26,9 +26,9 @@ public class Timeline : MonoBehaviour
 
     }
 
-    public void addAction(byte actionType, float position)
+    public void addAction(byte actionType, float position, string argument1 = "")
     {
-        actionList.Add(new actionElement(actionType, position));
+        actionList.Add(new actionElement(actionType, position, argument1));
         Debug.Log("An event has been added at beat number: " + position.ToString() + "." + "(" + actionType.ToString() + ")");
     }
 
@@ -36,14 +36,14 @@ public class Timeline : MonoBehaviour
     {
         foreach (actionElement item in actionList)
         {
-            if (item.position == updater.beatcount)
+            if (item.position == updater.beatcount-(1 * updater.beatmultiplier))
             {
-                performAction(item.action);
+                performAction(item.action, item.arg1);
             }
         }
     }
 
-    void performAction(byte actionType)
+    void performAction(byte actionType, string argument1 = "")
     {
         Debug.Log("Performing action: " + actionType.ToString());
         if (actionType == 0)
@@ -65,11 +65,28 @@ public class Timeline : MonoBehaviour
         }
         else if (actionType == 4)
         {
-            //End
+            //Deny step (Also affects CPU)
+        }
+        else if (actionType == 5)
+        {
+            //Allow step (Also affects CPU)
+        }
+        else if (actionType == 6)
+        {
+            //Toggle Auto
+            autoMode = !autoMode;
+        }
+        else if (actionType == 7)
+        {
+            //End game
+        }
+        else if (actionType == 8){
+            //playSound
+            playSound(argument1);
         }
     }
 
-    //ACTIONS START
+        //ACTIONS START
     #region actions
     public void switchStep(bool halveBeat)
     {
@@ -95,6 +112,11 @@ public class Timeline : MonoBehaviour
 			updater.switchingStep = true;
         }
     }
+    public void playSound(string soundFile){
+        AudioClip soundtoplay;
+            soundtoplay = Resources.Load<AudioClip>("Sounds/SFX/" + soundFile);
+            GameObject.FindGameObjectWithTag("Player").GetComponent<AudioSource>().PlayOneShot(soundtoplay);
+    }
     #endregion
 
 }
@@ -103,10 +125,12 @@ struct actionElement
 {
     public float position;
     public byte action;
+    public string arg1;
 
-    public actionElement(byte act, float pos)
+    public actionElement(byte act, float pos, string a1 = "")
     {
         position = pos;
         action = act;
+        arg1 = a1;
     }
 }

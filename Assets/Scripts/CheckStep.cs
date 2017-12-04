@@ -15,7 +15,7 @@ public class CheckStep : MonoBehaviour
     public double pastHitPos;
     public Text OSText;
     public bool isHurt = false;
-    public bool canStep = true;
+    public bool canStep;
     public byte hurtOrientation = 0;
     /*
     HURTING ORIENTATION GUIDE:
@@ -29,6 +29,7 @@ public class CheckStep : MonoBehaviour
     {
         beatdur = GetComponent<Ticko>().beatdur * GetComponent<Ticko>().beatmultiplier;
         beatMultiplier = GetComponent<Ticko>().beatmultiplier;
+        canStep = true;
     }
 
     // Update is called once per frame

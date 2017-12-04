@@ -31,7 +31,7 @@ public class Ticko : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-         // every beat (With the multiplier in action, probably gonna use this for swing beats)
+        // every beat (With the multiplier in action, probably gonna use this for swing beats)
         if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
         {
             timeline.checkTimeline();
@@ -41,11 +41,8 @@ public class Ticko : MonoBehaviour
                 GetComponent<CheckStep>().performStep();
             }
             beatcount += (1 * beatmultiplier);
-            timeline.switchStep(false);
-            // ^ makes sure the beat is 1x when required (used to switch to offbeat)
             /* CPU LOGIC START
             */
-
             if (StepOnOffbeats == true)
             {
                 //if offbeat
@@ -64,14 +61,29 @@ public class Ticko : MonoBehaviour
                 }
 
             }
-            
-        }
+            timeline.switchStep(false);
+            // ^ makes sure the beat is 1x when required (used to switch to offbeat)
+            }
 
         // testing purposes - press A to make the whole game orientation switch to offbeat
         if (Input.GetKeyDown("a"))
         {
+            timeline.addAction(8, 5, "cowbell");
+            timeline.addAction(8, 6, "cowbell");
             timeline.addAction(2, 7);
-            timeline.addAction(2, 29.5f);
+            timeline.addAction(8, 7, "cowbell");
+            timeline.addAction(8, 13.5f, "cowbell");
+            timeline.addAction(8, 14.5f, "cowbell");
+            timeline.addAction(2, 15.5f);
+            timeline.addAction(8, 15.5f, "cowbell");
+            timeline.addAction(8, 21, "cowbell");
+            timeline.addAction(8, 22, "cowbell");
+            timeline.addAction(2, 23);
+            timeline.addAction(8, 23, "cowbell");
+            timeline.addAction(8, 29.5f, "cowbell");
+            timeline.addAction(8, 30.5f, "cowbell");
+            timeline.addAction(2, 31.5f);
+            timeline.addAction(8, 31.5f, "cowbell");
         }
 
         if (Input.GetKeyDown("s"))

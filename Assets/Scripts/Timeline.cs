@@ -36,7 +36,7 @@ public class Timeline : MonoBehaviour
     {
         foreach (actionElement item in actionList)
         {
-            if (item.position == updater.beatcount)
+            if (item.position == (updater.beatcount - (1*updater.beatmultiplier)))
             {
                 performAction(item.action, item.arg1);
             }
@@ -80,13 +80,14 @@ public class Timeline : MonoBehaviour
         {
             //End game
         }
-        else if (actionType == 8){
+        else if (actionType == 8)
+        {
             //playSound
             playSound(argument1);
         }
     }
 
-        //ACTIONS START
+    //ACTIONS START
     #region actions
     public void switchStep(bool halveBeat)
     {
@@ -95,9 +96,9 @@ public class Timeline : MonoBehaviour
             //bring back the multiplier to one if we're transitioning, offbeat transition stopped
             if (updater.switchingStep == true)
             {
-				updater.StepOnOffbeats = !updater.StepOnOffbeats;
-				updater.beatmultiplier = 1;
-				updater.switchingStep = false;
+                updater.StepOnOffbeats = !updater.StepOnOffbeats;
+                updater.beatmultiplier = 1;
+                updater.switchingStep = false;
             }
             else //if it's already off-transition
             {
@@ -107,17 +108,18 @@ public class Timeline : MonoBehaviour
         else if (halveBeat == true)
         {
             //halve the multiplier for a "beat", reduce the last beat by half a beat, so it goes into the backbeat
-			updater.beatmultiplier = 0.5f;
+            updater.beatmultiplier = 0.5f;
             updater.switchingStep = true;
             updater.pastbeat += (updater.beatdur * updater.beatmultiplier);
         }
-			
-			
+
+
     }
-    public void playSound(string soundFile){
+    public void playSound(string soundFile)
+    {
         AudioClip soundtoplay;
-            soundtoplay = Resources.Load<AudioClip>("Sounds/SFX/" + soundFile);
-            GameObject.FindGameObjectWithTag("Player").GetComponent<AudioSource>().PlayOneShot(soundtoplay);
+        soundtoplay = Resources.Load<AudioClip>("Sounds/SFX/" + soundFile);
+        GameObject.FindGameObjectWithTag("Player").GetComponent<AudioSource>().PlayOneShot(soundtoplay);
     }
     #endregion
 

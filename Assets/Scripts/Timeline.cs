@@ -36,7 +36,7 @@ public class Timeline : MonoBehaviour
     {
         foreach (actionElement item in actionList)
         {
-            if (item.position == updater.beatcount-(1 * updater.beatmultiplier))
+            if (item.position == updater.beatcount)
             {
                 performAction(item.action, item.arg1);
             }
@@ -108,9 +108,11 @@ public class Timeline : MonoBehaviour
         {
             //halve the multiplier for a "beat", reduce the last beat by half a beat, so it goes into the backbeat
 			updater.beatmultiplier = 0.5f;
-			updater.pastbeat -= (updater.beatdur * updater.beatmultiplier);
-			updater.switchingStep = true;
+            updater.switchingStep = true;
+            updater.pastbeat += (updater.beatdur * updater.beatmultiplier);
         }
+			
+			
     }
     public void playSound(string soundFile){
         AudioClip soundtoplay;

@@ -68,18 +68,22 @@ public class Ticko : MonoBehaviour
         // testing purposes - press A to make the whole game orientation switch to offbeat
         if (Input.GetKeyDown("a"))
         {
+            timeline.addAction(8, 4, "cowbell");
             timeline.addAction(8, 5, "cowbell");
             timeline.addAction(8, 6, "cowbell");
             timeline.addAction(2, 7);
             timeline.addAction(8, 7, "cowbell");
+            timeline.addAction(8, 12.5f, "cowbell");
             timeline.addAction(8, 13.5f, "cowbell");
             timeline.addAction(8, 14.5f, "cowbell");
             timeline.addAction(2, 15.5f);
             timeline.addAction(8, 15.5f, "cowbell");
+            timeline.addAction(8, 20, "cowbell");
             timeline.addAction(8, 21, "cowbell");
             timeline.addAction(8, 22, "cowbell");
             timeline.addAction(2, 23);
             timeline.addAction(8, 23, "cowbell");
+            timeline.addAction(8, 28.5f, "cowbell");
             timeline.addAction(8, 29.5f, "cowbell");
             timeline.addAction(8, 30.5f, "cowbell");
             timeline.addAction(2, 31.5f);

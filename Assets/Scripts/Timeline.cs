@@ -10,7 +10,9 @@ public class Timeline : MonoBehaviour
     List<actionElement> actionList;
     List<actionElement> surfaceActionList;
     Ticko updater;
-    Conductor conductor;
+    CheckStep stepcheck;
+    public bool isPreparing;
+    public bool stayStill;
     public bool autoMode = true;
 
     // Use this for initialization
@@ -19,7 +21,7 @@ public class Timeline : MonoBehaviour
         actionList = new List<actionElement>();
         surfaceActionList = new List<actionElement>();
         updater = GetComponent<Ticko>();
-        conductor = GetComponent<Conductor>();
+        stepcheck = GetComponent<CheckStep>();
     }
 
     // Update is called once per frame
@@ -72,10 +74,12 @@ public class Timeline : MonoBehaviour
         if (actionType == 0)
         {
             //Prepare
+            togglePrepare(int.Parse(argument1), true, false);
         }
         if (actionType == 1)
         {
             //Stop prepare
+            togglePrepare(1, false, false);
         }
         if (actionType == 2)
         {
@@ -88,11 +92,13 @@ public class Timeline : MonoBehaviour
         }
         if (actionType == 4)
         {
-            //Deny step (Also affects CPU)
+            //Stay Still (Preparing) (Also affects CPU)
+            togglePrepare(int.Parse(argument1), true, true);
         }
         if (actionType == 5)
         {
-            //Allow step (Also affects CPU)
+            //Move Again (Preparing) (Also affects CPU)
+            togglePrepare(int.Parse(argument1), true, false);
         }
         if (actionType == 6)
         {
@@ -132,6 +138,21 @@ public class Timeline : MonoBehaviour
         }
 
 
+    }
+
+    public void togglePrepare(float multiplier, bool active, bool doNotMove){
+        if (active == true){
+            updater.beatmultiplier = multiplier;
+            isPreparing = true;
+            if (doNotMove){
+                stayStill = true;
+            }
+        }
+        else if (active == false){
+            updater.beatmultiplier = 1;
+            isPreparing = false;
+            stayStill = false;
+        }
     }
     public void playSound(string soundFile)
     {

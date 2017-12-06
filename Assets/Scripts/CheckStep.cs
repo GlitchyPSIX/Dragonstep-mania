@@ -15,7 +15,6 @@ public class CheckStep : MonoBehaviour
     public double pastHitPos;
     public Text OSText;
     public bool isHurt = false;
-    public bool canStep;
     public byte hurtOrientation = 0;
     /*
     HURTING ORIENTATION GUIDE:
@@ -24,12 +23,16 @@ public class CheckStep : MonoBehaviour
     */
     int hitCounter = 0;
     int missCounter = 0;
+    Timeline timeline;
+        
     // Use this for initialization
     void Start()
     {
         beatdur = GetComponent<Ticko>().beatdur * GetComponent<Ticko>().beatmultiplier;
         beatMultiplier = GetComponent<Ticko>().beatmultiplier;
-        canStep = true;
+        timeline = GetComponent<Timeline>();
+        timeline.isPreparing = false;
+       
     }
 
     // Update is called once per frame
@@ -46,7 +49,7 @@ public class CheckStep : MonoBehaviour
                             ||
                         (GetComponent<Conductor>().songposition > (GetComponent<Ticko>().pastbeat + (0.75f * beatdur))
                         ))
-                    )
+                    ) && timeline.autoMode == false
                 )
             {
                 performStep();
@@ -58,7 +61,8 @@ public class CheckStep : MonoBehaviour
             }
         }
         //check for miss each frame
-        CheckMiss();
+            CheckMiss();
+
         //show info
         OSText.text = "Beat count:" + GetComponent<Ticko>().beatcount.ToString() +
         "\n" + "Song offset: " + (GetComponent<Conductor>().songposition + GetComponent<Ticko>().offset).ToString() +
@@ -76,16 +80,22 @@ public class CheckStep : MonoBehaviour
         //add a successful hit
         hitCounter++;
         isHurt = false;
-        if (!(GetComponent<Ticko>().StepOnOffbeats)) //If onbeat
+        if ((timeline.isPreparing) && (!(GetComponent<Ticko>().StepOnOffbeats)) && timeline.stayStill == false) //If onbeat(default) AND is preparing
+        {
+            GameObject.FindWithTag("Player").GetComponent<Step>().PrepareStep();
+        }
+        else if (!(GetComponent<Ticko>().StepOnOffbeats) && timeline.stayStill == false) //If onbeat
         {
             GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatStep();
-            pastHitPos = GetComponent<Conductor>().songposition;
         }
-        else if ((GetComponent<Ticko>().StepOnOffbeats)) //If at backbeat
+        else if ((GetComponent<Ticko>().StepOnOffbeats) && timeline.stayStill == false) //If at backbeat
         {
             GameObject.FindWithTag("Player").GetComponent<Step>().OffBeatStep();
-            pastHitPos = GetComponent<Conductor>().songposition;
         }
+        else{
+            // Do not play any animation.
+        }
+        pastHitPos = GetComponent<Conductor>().songposition;
     }
 
     void CheckMiss()

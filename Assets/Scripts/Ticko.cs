@@ -119,7 +119,13 @@ public class Ticko : MonoBehaviour
             timeline.addAction(4, 0, "1");
             timeline.addAction(0, 12, "3");
             timeline.addAction(0, 24, "1");
+            timeline.addAction(2, 35);
+            timeline.addAction(2, 36);
             timeline.addAction(1, 29);
+            timeline.addAction(2, 54);
+            timeline.addAction(2, 68);
+            timeline.addAction(2, 77);
+            timeline.addAction(2, 78);
         }
     }
 

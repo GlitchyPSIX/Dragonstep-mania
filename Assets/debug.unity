@@ -321,7 +321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53b61190b76e02040a537b6899fe0720, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bpm: 200
+  bpm: 200.1
   offset: 0
   songposition: 0
   song: {fileID: 0}

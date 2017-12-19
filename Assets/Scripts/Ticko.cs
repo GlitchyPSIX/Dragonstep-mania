@@ -32,6 +32,7 @@ public class Ticko : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        timeline.updateTimelinePosition();
         // every beat (With the multiplier in action, probably gonna use this for swing beats)
         if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
         {
@@ -41,7 +42,6 @@ public class Ticko : MonoBehaviour
             {
                 GetComponent<CheckStep>().performStep();
             }
-            beatcount += (1 * beatmultiplier);
             /* CPU LOGIC START
             */
             if (StepOnOffbeats == true && timeline.stayStill == false)

@@ -14,6 +14,7 @@ public class Timeline : MonoBehaviour
     public bool isPreparing;
     public bool stayStill;
     public bool autoMode = true;
+    double pastHalfbeat;
 
     // Use this for initialization
     void Start()
@@ -22,6 +23,7 @@ public class Timeline : MonoBehaviour
         surfaceActionList = new List<actionElement>();
         updater = GetComponent<Ticko>();
         stepcheck = GetComponent<CheckStep>();
+        pastHalfbeat = updater.pastbeat;
     }
 
     // Update is called once per frame
@@ -42,24 +44,32 @@ public class Timeline : MonoBehaviour
             surfaceActionList.Add(new actionElement(actionType, position, argument1));
             Debug.Log("An event has been added at beat number: " + position.ToString() + "." + "(" + actionType.ToString() + ") [SURFACE EVENT]");
         }
-        
+
     }
 
     public void checkTimeline()
     {
         foreach (actionElement item in actionList)
         {
-            if (item.position == (updater.beatcount + (1*updater.beatmultiplier)))
+            if (item.position == (updater.beatcount + (1 * updater.beatmultiplier)))
             {
                 performAction(item.action, item.arg1);
             }
         }
         foreach (actionElement item in surfaceActionList)
         {
-            if (item.position == (updater.beatcount + (1*updater.beatmultiplier)))
+            if (item.position == (updater.beatcount + (1 * updater.beatmultiplier)))
             {
                 performAction(item.action, item.arg1);
             }
+        }
+    }
+
+    public void updateTimelinePosition(){
+        if (GetComponent<Conductor>().songposition + updater.offset > pastHalfbeat + (updater.beatdur * 0.5f))
+        {
+            updater.beatcount += 0.5f;
+            pastHalfbeat += (updater.beatdur * 0.5f);
         }
     }
 
@@ -140,15 +150,19 @@ public class Timeline : MonoBehaviour
 
     }
 
-    public void togglePrepare(float multiplier, bool active, bool doNotMove){
-        if (active == true){
+    public void togglePrepare(float multiplier, bool active, bool doNotMove)
+    {
+        if (active == true)
+        {
             updater.beatmultiplier = multiplier;
             isPreparing = true;
-            if (doNotMove){
+            if (doNotMove)
+            {
                 stayStill = true;
             }
         }
-        else if (active == false){
+        else if (active == false)
+        {
             updater.beatmultiplier = 1;
             isPreparing = false;
             stayStill = false;

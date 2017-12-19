@@ -26,7 +26,7 @@ public class Ticko : MonoBehaviour
         //for every background stepswitcher
         BackgroundSwitchers = GameObject.FindGameObjectsWithTag("Background");
         timeline = GetComponent<Timeline>();
-        StartCoroutine(addSampleBeatmap(1));
+        StartCoroutine(addSampleBeatmap(0));
     }
 
     // Update is called once per frame

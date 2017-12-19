@@ -51,25 +51,27 @@ public class Timeline : MonoBehaviour
     {
         foreach (actionElement item in actionList)
         {
-            if (item.position == (updater.beatcount + (1 * updater.beatmultiplier)))
+            if (item.position == (updater.beatcount + 0.5f))
             {
                 performAction(item.action, item.arg1);
             }
         }
         foreach (actionElement item in surfaceActionList)
         {
-            if (item.position == (updater.beatcount + (1 * updater.beatmultiplier)))
+            if (item.position == (updater.beatcount + 0.5f))
             {
                 performAction(item.action, item.arg1);
             }
         }
     }
 
-    public void updateTimelinePosition(){
+    public void updateTimelinePosition()
+    {
         if (GetComponent<Conductor>().songposition + updater.offset > pastHalfbeat + (updater.beatdur * 0.5f))
         {
-            updater.beatcount += 0.5f;
             pastHalfbeat += (updater.beatdur * 0.5f);
+            checkTimeline();
+            updater.beatcount += 0.5f;
         }
     }
 
@@ -160,12 +162,16 @@ public class Timeline : MonoBehaviour
             {
                 stayStill = true;
             }
+            else
+            {
+                stayStill = false;
+            }
         }
         else if (active == false)
         {
             updater.beatmultiplier = 1;
-            isPreparing = false;
             stayStill = false;
+            isPreparing = false;
         }
     }
     public void playSound(string soundFile)

@@ -1,6 +1,6 @@
 # ***Dragonstep-Mania***
 Lockstep wannabe game in progress.
-in-game Music by TangoStar.
+in-game Music by TangoStar and Acetantina.
 
 Currently trying to make it beatmappable.
 

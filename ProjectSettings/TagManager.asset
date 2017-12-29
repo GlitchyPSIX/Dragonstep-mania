@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Background
   - Beatline
+  - UICanvas
   layers:
   - Default
   - TransparentFX

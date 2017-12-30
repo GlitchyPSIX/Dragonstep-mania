@@ -7,6 +7,7 @@ TagManager:
   - Background
   - Beatline
   - UICanvas
+  - UIMenuContainer
   layers:
   - Default
   - TransparentFX
@@ -16,7 +17,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - Particles
   - 
   - 
   - 
@@ -43,4 +44,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: BelowUI
+    uniqueID: 3348636173
     locked: 0

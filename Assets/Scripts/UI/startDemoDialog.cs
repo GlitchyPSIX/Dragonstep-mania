@@ -10,40 +10,55 @@ public class startDemoDialog : MonoBehaviour
     GameObject menuObj1;
     GameObject menuObj2;
     GameObject menuPref;
+    MenuListControl mlc;
+    Transform containerTransform;
 
     // Use this for initialization
     void Start()
     {
-
-        dialogPref = Resources.Load<GameObject>("Prefabs/UI/Dialog");
-        menuPref = Resources.Load<GameObject>("Prefabs/UI/MenuItem");
-        dialogObj = Instantiate(dialogPref);
-        menuObj = Instantiate(menuPref);
-        menuObj1 = Instantiate(menuPref);
-        menuObj2 = Instantiate(menuPref);
-        dialogObj.transform.SetParent(GameObject.FindGameObjectWithTag("UICanvas").transform, false);
-        menuObj.transform.SetParent(GameObject.FindGameObjectWithTag("UIMenuContainer").transform, false);
-        menuObj1.transform.SetParent(GameObject.FindGameObjectWithTag("UIMenuContainer").transform, false);
-        menuObj2.transform.SetParent(GameObject.FindGameObjectWithTag("UIMenuContainer").transform, false);
-        dialogObj.SetActive(true);
-        StartCoroutine(StartDemoDialogAfter());
+        containerTransform = GameObject.FindGameObjectWithTag("UIMenuContainer").transform;
+        mlc = GetComponent<MenuListControl>();
+        StartDemoDialogAfter();
+        mlc.listMenuElements();        
     }
 
-    // Update is called once per frame
-    IEnumerator StartDemoDialogAfter()
+    void mainMenu()
     {
-        yield return new WaitForEndOfFrame();
-        menuObj.GetComponent<MenuItemControl>().setMenuItem("Play Demo", "Play this demo.", Resources.LoadAll<Sprite>("Sprites/UI/Icons/menuDialog")[0], menuObj.GetComponent<MenuItemControl>().killItem, Resources.Load<AudioClip>("Sounds/SFX/UI/hiSelection"));
-        menuObj1.GetComponent<MenuItemControl>().setMenuItem("Play Demo 1", "Play this demo 1.", Resources.LoadAll<Sprite>("Sprites/UI/Icons/menuDialog")[1], menuObj1.GetComponent<MenuItemControl>().killItem, Resources.Load<AudioClip>("Sounds/SFX/UI/hiSelection"));
-        menuObj2.GetComponent<MenuItemControl>().setMenuItem("Play Demo 2", "Play this demo 2.", Resources.LoadAll<Sprite>("Sprites/UI/Icons/menuDialog")[2], menuObj2.GetComponent<MenuItemControl>().killItem, Resources.Load<AudioClip>("Sounds/SFX/UI/hiSelection"));
-
+        //load main menu's icons
+        mlc.addMenuElement("Play Demo", "Play a sample song.", mlc.iconlist[5], UnimplementedFunctionDialog, Resources.Load<AudioClip>("Sounds/SFX/UI/hiSelection"));
+        mlc.addMenuElement("Endurance Mode", "This isn't available now.", mlc.iconlist[0], UnimplementedFunctionDialog, Resources.Load<AudioClip>("Sounds/SFX/UI/hiSelection"));
+        mlc.addMenuElement("Exit", "Close the game.", mlc.iconlist[6], UnimplementedFunctionDialog, Resources.Load<AudioClip>("Sounds/SFX/UI/hiSelection"));
+    }
+    
+    void UnimplementedFunctionDialog(){
+        dialogPref = Resources.Load<GameObject>("Prefabs/UI/Dialog");
+        dialogObj = Instantiate(dialogPref);
+        dialogObj.SetActive(true);
+        dialogObj.transform.SetParent(GameObject.FindGameObjectWithTag("UICanvas").transform, false);
+        dialogObj.GetComponent<DialogControl>().setDialog(
+                                            "Not implemented",
+                                            "The function for this menu item has not been implemented yet. Sorry!",
+                                            0,
+                                            null,
+                                            null,
+                                            dialogObj.GetComponent<DialogControl>().closeDialog,
+                                            null,
+                                            null,
+                                            Resources.Load<AudioClip>("Sounds/SFX/UI/hiSelection"), "", "OK", "");
+    }
+    void StartDemoDialogAfter()
+    {
+        dialogPref = Resources.Load<GameObject>("Prefabs/UI/Dialog");
+        dialogObj = Instantiate(dialogPref);
+        dialogObj.SetActive(true);
+        dialogObj.transform.SetParent(GameObject.FindGameObjectWithTag("UICanvas").transform, false);
         dialogObj.GetComponent<DialogControl>().setDialog(
                                             "Demo",
                                             "Remember this is a demo. Any error or missing thing should be reported to me in the respective channel.",
                                             0,
                                             null,
                                             null,
-                                            dialogObj.GetComponent<DialogControl>().closeDialog,
+                                            () => { mainMenu(); StartCoroutine(mlc.showMenuElements(containerTransform)); dialogObj.GetComponent<DialogControl>().closeDialog(); },
                                             null,
                                             null,
                                             Resources.Load<AudioClip>("Sounds/SFX/UI/hiSelection"), "", "OK", "");

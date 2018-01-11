@@ -208,6 +208,8 @@ GameObject:
   - component: {fileID: 224184615059344690}
   - component: {fileID: 222161166656009334}
   - component: {fileID: 114060999148959224}
+  - component: {fileID: 114883320288257458}
+  - component: {fileID: 114945531184908688}
   m_Layer: 5
   m_Name: DialogTitle
   m_TagString: Untagged
@@ -611,11 +613,11 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: d9485bbd106f94f4388b678365568622, type: 3}
-    m_FontSize: 25
+    m_FontSize: 26
     m_FontStyle: 0
-    m_BestFit: 1
-    m_MinSize: 10
-    m_MaxSize: 40
+    m_BestFit: 0
+    m_MinSize: 6
+    m_MaxSize: 62
     m_Alignment: 4
     m_AlignByGeometry: 1
     m_RichText: 1
@@ -1006,6 +1008,24 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114883320288257458
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1792500564223428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1679637790, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: 282.4
+  m_PreferredHeight: -1
+  m_FlexibleWidth: 17.82
+  m_FlexibleHeight: -1
 --- !u!114 &114906270830278346
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1085,6 +1105,19 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114945531184908688
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1792500564223428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1741964061, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 2
+  m_VerticalFit: 0
 --- !u!222 &222129175598350774
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -1231,10 +1264,10 @@ RectTransform:
   m_Father: {fileID: 224078091366121208}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 2.1, y: -6.800003}
-  m_SizeDelta: {x: 280.2, y: 42.8}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 1.0999999, y: -10.300003}
+  m_SizeDelta: {x: 0, y: -155.2}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!224 &224244308039738362
 RectTransform:
@@ -1386,7 +1419,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -18.600006, y: 17.599998}
+  m_AnchoredPosition: {x: -35, y: 35}
   m_SizeDelta: {x: 64, y: 64}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &224752595349913266

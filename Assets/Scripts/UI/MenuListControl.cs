@@ -7,35 +7,49 @@ public class MenuListControl : MonoBehaviour
 {
 
     List<menuElement> menustack;
-    GameObject menuPref;
+    public Sprite[] iconlist;
+
+
 
     // Use this for initialization
     void Start()
     {
+        //initialize the list and icon list
         menustack = new List<menuElement>();
+        iconlist = Resources.LoadAll<Sprite>("Sprites/UI/Icons/menuDialog");
     }
 
-    // Update is called once per frame
-    void Update()
+    public void listMenuElements()
     {
-
+        //for every element in the menu stack list, show basic info, not what it does (debug purposes)
+        foreach (menuElement elm in menustack)
+        {
+            Debug.Log("MENUTITLE: " + elm.name + "\n" + elm.icon.ToString() + "\n" + elm.subtitle);
+        }
     }
 
-    public void showMenuElements(Transform menuContainer){
-        foreach(menuElement element in menustack){
+    public IEnumerator showMenuElements(Transform menuContainer)
+    {
+        // for every element in the menu stack list
+        foreach (menuElement elm in menustack)
+        {
+            yield return new WaitForSeconds(0.03f);
+            //wait some time so it looks like they're coming in progressively
             GameObject menuObj;
+            GameObject menuPref;
+            menuPref = Resources.Load<GameObject>("Prefabs/UI/MenuItem");
             menuObj = Instantiate(menuPref);
-            menuObj.transform.SetParent(menuContainer.transform);
-            menuObj.GetComponent<MenuItemControl>().setMenuItem(element.name, element.subtitle, element.icon, element.action, element.sfx);
+            menuObj.transform.SetParent(menuContainer.transform, false);
+            menuObj.GetComponent<MenuItemControl>().setMenuItem(elm.name, elm.subtitle, elm.icon, elm.action, elm.sfx);
         }
+        //remove all the elements from the stack, they're already displayed
         menustack.RemoveRange(0, menustack.Count);
     }
 
-    public void addMenuElement(string N, Sprite I, string S, UnityAction A, AudioClip F)
+    public void addMenuElement(string N, string S, Sprite I, UnityAction A, AudioClip F)
     {
-        menuElement elementToAdd;
-        elementToAdd = new menuElement(N, I, S, A, F);
-        menustack.Add(elementToAdd);
+        //create a new menuElement in the stack
+        menustack.Add(new menuElement(N, S, I, A, F));
     }
 
     struct menuElement
@@ -46,13 +60,15 @@ public class MenuListControl : MonoBehaviour
         public UnityAction action;
 
         public AudioClip sfx;
-
-        public menuElement(string n, Sprite i, string s, UnityAction a, AudioClip snd)
+        //set the properties of the menu item
+        public menuElement(string n, string s, Sprite i, UnityAction a, AudioClip snd)
         {
-            if (snd = null){
+            if (snd == null)
+            {
                 sfx = Resources.Load<AudioClip>("SFX/UI/hiSelect");
             }
-            else{
+            else
+            {
                 sfx = snd;
             }
             name = n;

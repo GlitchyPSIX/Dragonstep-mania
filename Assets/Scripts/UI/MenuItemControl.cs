@@ -10,7 +10,6 @@ public class MenuItemControl : MonoBehaviour {
 
     Animator animataM;
     Image menuSprite;
-    GameObject menuBtn;
     Text menuText;
     string menuSubtitleText;
     public Sprite uiIcons;
@@ -24,7 +23,6 @@ public class MenuItemControl : MonoBehaviour {
         animataM = GetComponent<Animator>();
         menuSprite = transform.Find("MenuBG").gameObject.transform.Find("Image").GetComponent<Image>();
         menuText = transform.Find("MenuBG").gameObject.transform.Find("Text").GetComponent<Text>();
-        menuBtn = transform.Find("MenuBG").gameObject;
         menuSprite.sprite = spriteS;
         menuText.text = titleS;
         
@@ -52,13 +50,13 @@ public class MenuItemControl : MonoBehaviour {
 
         void OnMouseEnter(PointerEventData data, string subt)
     {
-        //If your mouse hovers over the GameObject with the script attached, output this message
-        Debug.Log(subt);
+        GameObject.FindGameObjectWithTag("UIMenuSubtitle").GetComponent<MenuSubtitleController>().ChangeText(subt);
         animataM.Play("menuHover");
     }
 
     void OnMouseExit(){
         animataM.Play("menuOut");
+        StartCoroutine(GameObject.FindGameObjectWithTag("UIMenuSubtitle").GetComponent<MenuSubtitleController>().FadeTextOut());
     }
 
 	public void killItem()

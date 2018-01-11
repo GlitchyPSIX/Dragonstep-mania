@@ -7,7 +7,6 @@ using UnityEngine;
 public class DialogControl : MonoBehaviour
 {
     Animator animataC;
-    UnityAction defaultBehav;
     Text title;
     Text body;
     Text buttonLText;
@@ -55,7 +54,6 @@ public class DialogControl : MonoBehaviour
         buttonL = transform.Find("DialogBG").transform.Find("ButtonL").gameObject;
         buttonM = transform.Find("DialogBG").transform.Find("ButtonM").gameObject;
         buttonR = transform.Find("DialogBG").transform.Find("ButtonR").gameObject;
-        defaultBehav = GetComponent<DialogControl>().closeDialog;
         title = transform.Find("DialogBG").transform.Find("DialogTitle").GetComponent<Text>();
         body = transform.Find("DialogBG").transform.Find("DialogText").GetComponent<Text>();
         buttonLText = buttonR.transform.Find("Text").GetComponent<Text>();

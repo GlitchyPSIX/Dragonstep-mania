@@ -10,7 +10,6 @@ public class Timeline : MonoBehaviour
     List<actionElement> actionList;
     List<actionElement> surfaceActionList;
     Ticko updater;
-    CheckStep stepcheck;
     public bool isPreparing;
     public bool stayStill;
     public bool autoMode = true;
@@ -22,7 +21,6 @@ public class Timeline : MonoBehaviour
         actionList = new List<actionElement>();
         surfaceActionList = new List<actionElement>();
         updater = GetComponent<Ticko>();
-        stepcheck = GetComponent<CheckStep>();
         pastHalfbeat = updater.pastbeat;
     }
 

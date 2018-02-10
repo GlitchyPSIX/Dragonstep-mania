@@ -1,14 +1,14 @@
 fileFormatVersion: 2
 guid: bfe83157acd67ad43ba1094da3dad27a
-timeCreated: 1517967936
+timeCreated: 1518225321
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: Miss
-    21300002: Regular
+    21300002: Normal
     21300004: Wink
-    21300006: dsmFace
-    21300008: evilGrin
+    21300006: Fancy
+    21300008: EvilGrin
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -107,12 +107,12 @@ TextureImporter:
         width: 254
         height: 202
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: Regular
+      name: Normal
       rect:
         serializedVersion: 2
         x: 0
@@ -120,7 +120,7 @@ TextureImporter:
         width: 254
         height: 201
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
@@ -133,12 +133,12 @@ TextureImporter:
         width: 254
         height: 202
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: dsmFace
+      name: Fancy
       rect:
         serializedVersion: 2
         x: 0
@@ -146,12 +146,12 @@ TextureImporter:
         width: 254
         height: 202
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1
     - serializedVersion: 2
-      name: evilGrin
+      name: EvilGrin
       rect:
         serializedVersion: 2
         x: 257
@@ -159,7 +159,7 @@ TextureImporter:
         width: 254
         height: 202
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: -1

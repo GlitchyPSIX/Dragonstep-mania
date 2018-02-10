@@ -2,30 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine;
+using DSMUI.Assets;
 
 public class MenuListControl : MonoBehaviour
 {
 
     List<menuElement> menustack;
     public Sprite[] iconlist;
-
-
-
     // Use this for initialization
     void Start()
     {
-        //initialize the list and icon list
+        //initialize the list
         menustack = new List<menuElement>();
-        iconlist = Resources.LoadAll<Sprite>("Sprites/UI/Icons/menuDialog");
-    }
-
-    public void listMenuElements()
-    {
-        //for every element in the menu stack list, show basic info, not what it does (debug purposes)
-        foreach (menuElement elm in menustack)
-        {
-            Debug.Log("MENUTITLE: " + elm.name + "\n" + elm.icon.ToString() + "\n" + elm.subtitle);
-        }
     }
 
     public IEnumerator showMenuElements(Transform menuContainer)
@@ -36,14 +24,21 @@ public class MenuListControl : MonoBehaviour
             yield return new WaitForSeconds(0.03f);
             //wait some time so it looks like they're coming in progressively
             GameObject menuObj;
-            GameObject menuPref;
-            menuPref = Resources.Load<GameObject>("Prefabs/UI/MenuItem");
-            menuObj = Instantiate(menuPref);
+            menuObj = Instantiate(Objects.MenuItemObject);
             menuObj.transform.SetParent(menuContainer.transform, false);
             menuObj.GetComponent<MenuItemControl>().setMenuItem(elm.name, elm.subtitle, elm.icon, elm.action, elm.sfx);
         }
         //remove all the elements from the stack, they're already displayed
         menustack.RemoveRange(0, menustack.Count);
+    }
+
+    public void listMenuElements()
+    {
+        //for every element in the menu stack list, show basic info, not what it does (debug purposes)
+        foreach (menuElement elm in menustack)
+        {
+            Debug.Log("MENUTITLE: " + elm.name + "\n" + elm.icon.ToString() + "\n" + elm.subtitle);
+        }
     }
 
     public void addMenuElement(string N, string S, Sprite I, UnityAction A, AudioClip F)
@@ -65,7 +60,7 @@ public class MenuListControl : MonoBehaviour
         {
             if (snd == null)
             {
-                sfx = Resources.Load<AudioClip>("SFX/UI/hiSelect");
+                sfx = SoundEffects.Select;
             }
             else
             {

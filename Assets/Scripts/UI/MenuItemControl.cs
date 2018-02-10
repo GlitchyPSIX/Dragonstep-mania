@@ -11,7 +11,7 @@ public class MenuItemControl : MonoBehaviour {
     Animator animataM;
     Image menuSprite;
     Text menuText;
-    string menuSubtitleText;
+    //string menuSubtitleText;
     public Sprite uiIcons;
 
     // Use this for initialization

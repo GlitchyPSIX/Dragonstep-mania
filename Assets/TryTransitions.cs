@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DSMUI.Assets;
 
 public class TryTransitions : MonoBehaviour {
     TransitionControl tc;
@@ -15,46 +16,46 @@ public class TryTransitions : MonoBehaviour {
         {
             if (Input.GetKey("q"))
             {
-                tc.PlayTransition(0, true);
+                tc.PlayTransition(Transitions.EvilGrin, true);
             }
             else if (Input.GetKey("w"))
             {
-                tc.PlayTransition(1, true);
+                tc.PlayTransition(Transitions.Fancy, true);
             }
             else if (Input.GetKey("e"))
             {
-                tc.PlayTransition(2, true);
+                tc.PlayTransition(Transitions.Normal, true);
             }
             else if (Input.GetKey("r"))
             {
-                tc.PlayTransition(3, true);
+                tc.PlayTransition(Transitions.Miss, true);
             }
             else if (Input.GetKey("t"))
             {
-                tc.PlayTransition(4, true);
+                tc.PlayTransition(Transitions.Wink, true);
             }
         }
         else if (Input.GetKey("s"))
         {
             if (Input.GetKey("q"))
             {
-                tc.PlayTransition(0, false);
+                tc.PlayTransition(Transitions.EvilGrin, false);
             }
             else if (Input.GetKey("w"))
             {
-                tc.PlayTransition(1, false);
+                tc.PlayTransition(Transitions.Fancy, false);
             }
             else if (Input.GetKey("e"))
             {
-                tc.PlayTransition(2, false);
+                tc.PlayTransition(Transitions.Normal, false);
             }
             else if (Input.GetKey("r"))
             {
-                tc.PlayTransition(3, false);
+                tc.PlayTransition(Transitions.Miss, false);
             }
             else if (Input.GetKey("t"))
             {
-                tc.PlayTransition(4, false);
+                tc.PlayTransition(Transitions.Wink, false);
             }
         }
 	}

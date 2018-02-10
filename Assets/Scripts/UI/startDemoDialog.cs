@@ -1,15 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DSMUI.Assets;
+
 public class startDemoDialog : MonoBehaviour
 {
 
     GameObject dialogObj;
-    GameObject dialogPref;
-    GameObject menuObj;
-    GameObject menuObj1;
-    GameObject menuObj2;
-    GameObject menuPref;
     MenuListControl mlc;
     Transform containerTransform;
 
@@ -19,20 +16,19 @@ public class startDemoDialog : MonoBehaviour
         containerTransform = GameObject.FindGameObjectWithTag("UIMenuContainer").transform;
         mlc = GetComponent<MenuListControl>();
         StartDemoDialogAfter();
-        mlc.listMenuElements();        
     }
 
     void mainMenu()
     {
         //load main menu's icons
-        mlc.addMenuElement("Play Demo", "Play a sample song.", mlc.iconlist[5], UnimplementedFunctionDialog, Resources.Load<AudioClip>("Sounds/SFX/UI/hiSelection"));
-        mlc.addMenuElement("Endurance Mode", "This isn't available now.", mlc.iconlist[0], UnimplementedFunctionDialog, Resources.Load<AudioClip>("Sounds/SFX/UI/hiSelection"));
-        mlc.addMenuElement("Exit", "Close the game.", mlc.iconlist[6], UnimplementedFunctionDialog, Resources.Load<AudioClip>("Sounds/SFX/UI/hiSelection"));
+        mlc.addMenuElement("Play Demo", "Play a sample song.", InterfaceIcons.Play, UnimplementedFunctionDialog, SoundEffects.Select);
+        mlc.addMenuElement("Endurance Mode", "This isn't available now.", InterfaceIcons.Endurance, UnimplementedFunctionDialog, SoundEffects.Select);
+        mlc.addMenuElement("Exit", "Close the game.", InterfaceIcons.Exit, UnimplementedFunctionDialog, SoundEffects.Select);
+        mlc.listMenuElements();
     }
     
     void UnimplementedFunctionDialog(){
-        dialogPref = Resources.Load<GameObject>("Prefabs/UI/Dialog");
-        dialogObj = Instantiate(dialogPref);
+        dialogObj = Instantiate(Objects.DialogObject);
         dialogObj.SetActive(true);
         dialogObj.transform.SetParent(GameObject.FindGameObjectWithTag("UICanvas").transform, false);
         dialogObj.GetComponent<DialogControl>().setDialog(
@@ -44,12 +40,11 @@ public class startDemoDialog : MonoBehaviour
                                             dialogObj.GetComponent<DialogControl>().closeDialog,
                                             null,
                                             null,
-                                            Resources.Load<AudioClip>("Sounds/SFX/UI/hiSelection"), "", "OK", "");
+                                            SoundEffects.Back, "", "OK", "");
     }
     void StartDemoDialogAfter()
     {
-        dialogPref = Resources.Load<GameObject>("Prefabs/UI/Dialog");
-        dialogObj = Instantiate(dialogPref);
+        dialogObj = Instantiate(Objects.DialogObject);
         dialogObj.SetActive(true);
         dialogObj.transform.SetParent(GameObject.FindGameObjectWithTag("UICanvas").transform, false);
         dialogObj.GetComponent<DialogControl>().setDialog(
@@ -61,6 +56,6 @@ public class startDemoDialog : MonoBehaviour
                                             () => { mainMenu(); StartCoroutine(mlc.showMenuElements(containerTransform)); dialogObj.GetComponent<DialogControl>().closeDialog(); },
                                             null,
                                             null,
-                                            Resources.Load<AudioClip>("Sounds/SFX/UI/hiSelection"), "", "OK", "");
+                                             SoundEffects.Confirm, "", "OK", "");
     }
 }

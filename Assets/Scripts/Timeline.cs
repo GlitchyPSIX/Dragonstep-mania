@@ -14,6 +14,7 @@ public class Timeline : MonoBehaviour
     public bool stayStill;
     public bool autoMode = true;
     double pastHalfbeat;
+    float snap;
 
     // Use this for initialization
     void Start()
@@ -22,12 +23,7 @@ public class Timeline : MonoBehaviour
         surfaceActionList = new List<actionElement>();
         updater = GetComponent<Ticko>();
         pastHalfbeat = updater.pastbeat;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        snap = 0.5f;
     }
 
     public void addAction(byte actionType, float position, string argument1 = "")
@@ -65,11 +61,11 @@ public class Timeline : MonoBehaviour
 
     public void updateTimelinePosition()
     {
-        if (GetComponent<Conductor>().songposition + updater.offset > pastHalfbeat + (updater.beatdur * 0.5f))
+        if (GetComponent<Conductor>().songposition + updater.offset > pastHalfbeat + (updater.beatdur * snap))
         {
-            pastHalfbeat += (updater.beatdur * 0.5f);
+            pastHalfbeat += (updater.beatdur * snap);
             checkTimeline();
-            updater.beatcount += 0.5f;
+            updater.beatcount += snap;
         }
     }
 
@@ -118,6 +114,11 @@ public class Timeline : MonoBehaviour
         if (actionType == 7)
         {
             //End game
+        }
+        if (actionType == 8)
+        {
+            //Change snap
+            snap = int.Parse(argument1);
         }
     }
 

@@ -76,14 +76,15 @@ public class Ticko : MonoBehaviour
             // ^ makes sure the beat is 1x when required (used to switch to offbeat)
         }
         timeline.updateTimelinePosition();
-        if (Input.GetKeyDown("a"))
-        {
-            //emergency switch
-            timeline.switchStep(true);
-        }
+        //if (Input.GetKeyDown("a"))
+        //{
+        //    //emergency switch
+        //    timeline.switchStep(true);
+        //}
 
         if (Input.GetKeyDown("d"))
         {
+            //toggle Auto
             timeline.autoMode = !timeline.autoMode;
         }
     }
@@ -93,6 +94,7 @@ public class Ticko : MonoBehaviour
         yield return new WaitForEndOfFrame();
         if (sample == 0)
         {
+            //sample beatmap
             timeline.addAction(4, 1, "2");
             timeline.addAction(5, 3, "1");
             timeline.addAction(1, 6, "1");

@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine;
+using DSMUI.Assets;
+
+
+// Deprecated class. To be deleted soon.
+
 
 public class DialogControl : MonoBehaviour
 {
@@ -15,38 +20,14 @@ public class DialogControl : MonoBehaviour
     GameObject buttonL;
     GameObject buttonM;
     GameObject buttonR;
+    AudioSource dialogSFX;
     AudioSource buttonLSFX;
     AudioSource buttonMSFX;
     AudioSource buttonRSFX;
-    public AudioClip hiSelectfx;
-    public AudioClip selectfx;
-    public AudioClip backfx;
 
-    // Use this for initialization
-    void Start()
-    {
-        //why hello there, preload the sounds
-        hiSelectfx = Resources.Load<AudioClip>("Sounds/SFX/UI/hiSelect");
-        selectfx = Resources.Load<AudioClip>("Sounds/SFX/UI/select");
-        backfx = Resources.Load<AudioClip>("Sounds/SFX/UI/back");
-    }
-    #region setDialog_doc
-    /// <summary>
-    /// Sets the data and actions for this dialog box.
-    /// </summary>
-    ///
-    /// <param name="titleS">The title of the dialog.</param>
-    /// <param name="textS">The title of the dialog.</param>
-    /// <param name="buttons">Button types. 0 for only left. 1 for middle and right. 2 for all three buttons.</param>
-    /// <param name="scriptleft">UnityAction to call for the left button.</param>
-    /// <param name="scriptmiddle">UnityAction to call for the middle button.</param>
-    /// <param name="scriptright">UnityAction to call for the right button.</param>
-    /// <param name="buttonLS">Text of the left button.</param>
-    /// <param name="buttonMS">Text of the middle button.</param>
-    /// <param name="buttonRS">Text of the right button.</param>
-    #endregion
+
     public void setDialog(string titleS, string textS, byte buttons, UnityAction scriptleft, UnityAction scriptmiddle,
-                          UnityAction scriptright, AudioClip buttonLASFX, AudioClip buttonMASFX, AudioClip buttonRASFX,
+                          UnityAction scriptright, AudioClip dialogASFX, AudioClip buttonLASFX, AudioClip buttonMASFX, AudioClip buttonRASFX,
                           string buttonLS = "", string buttonRS = "", string buttonMS = "")
     {
         //declare every variable at the same time we tell the dialog to start
@@ -62,11 +43,13 @@ public class DialogControl : MonoBehaviour
         buttonLSFX = buttonL.transform.Find("SFX").GetComponent<AudioSource>();
         buttonMSFX = buttonM.transform.Find("SFX").GetComponent<AudioSource>();
         buttonRSFX = buttonR.transform.Find("SFX").GetComponent<AudioSource>();
-
+        dialogSFX = transform.Find("DialogBG").GetComponent<AudioSource>();
+        
         //set the sound effects
         buttonLSFX.clip = buttonLASFX;
         buttonMSFX.clip = buttonMASFX;
         buttonRSFX.clip = buttonRASFX;
+        dialogSFX.clip = dialogASFX;
 
         //set the dialog data
         title.text = titleS;
@@ -110,13 +93,14 @@ public class DialogControl : MonoBehaviour
         buttonR.GetComponent<Button>().onClick.AddListener(scriptright);
         buttonM.GetComponent<Button>().onClick.AddListener(scriptmiddle);
         animataC.Play("Enter");
+        dialogSFX.Play();
     }
 
     public void closeDialog()
     {
         animataC.Play("Exit");
-        // all UI SFX should be no more than 1.5s.
-        Destroy(gameObject, 1.5f);
+        // all UI SFX should be no more than 1.2s.
+        Destroy(gameObject, 1.2f);
     }
 
 }

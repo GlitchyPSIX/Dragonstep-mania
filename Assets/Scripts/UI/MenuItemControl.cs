@@ -4,15 +4,14 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine;
-
+using DSMUI.Assets;
 
 public class MenuItemControl : MonoBehaviour {
 
     Animator animataM;
     Image menuSprite;
     Text menuText;
-    //string menuSubtitleText;
-    public Sprite uiIcons;
+    AudioSource player;
 
     // Use this for initialization
     void Start () {
@@ -52,6 +51,8 @@ public class MenuItemControl : MonoBehaviour {
     {
         GameObject.FindGameObjectWithTag("UIMenuSubtitle").GetComponent<MenuSubtitleController>().ChangeText(subt);
         animataM.Play("menuHover");
+        player.clip = SoundEffects.Hover;
+        player.Play();
     }
 
     void OnMouseExit(){
@@ -71,5 +72,6 @@ public class MenuItemControl : MonoBehaviour {
     IEnumerator LateStart(){
         yield return new WaitForEndOfFrame();
         animataM = GetComponent<Animator>();
+        player = GetComponent<AudioSource>();
     }
 }

@@ -6,7 +6,7 @@ PlayerSettings:
   serializedVersion: 11
   productGUID: 373a0799511285a48a4283bf4e54ed36
   AndroidProfiler: 0
-  defaultScreenOrientation: 4
+  defaultScreenOrientation: 2
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
@@ -38,7 +38,7 @@ PlayerSettings:
     width: 1
     height: 1
   m_SplashScreenLogos:
-  - logo: {fileID: 21300000, guid: 31571cb68a94267439a25bb53296d6ad, type: 3}
+  - logo: {fileID: 0}
     duration: 2
   m_SplashScreenBackgroundLandscape: {fileID: 0}
   m_SplashScreenBackgroundPortrait: {fileID: 0}
@@ -139,7 +139,7 @@ PlayerSettings:
   protectGraphicsMemory: 0
   useHDRDisplay: 0
   applicationIdentifier:
-    Android: com.Company.ProductName
+    Android: om.glitchypsi.dragonstep
     Standalone: unity.PSI2X.Dragonstep-MANIA
     Tizen: com.Company.ProductName
     iOS: com.Company.ProductName
@@ -164,7 +164,7 @@ PlayerSettings:
     serializedVersion: 2
     m_Bits: 238
   iPhoneSdkVersion: 988
-  iOSTargetOSVersionString: 
+  iOSTargetOSVersionString: 7.0
   tvOSSdkVersion: 0
   tvOSRequireExtendedGameController: 0
   tvOSTargetOSVersionString: 
@@ -222,7 +222,7 @@ PlayerSettings:
   androidSplashScreen: {fileID: 0}
   AndroidKeystoreName: 
   AndroidKeyaliasName: 
-  AndroidTVCompatibility: 1
+  AndroidTVCompatibility: 0
   AndroidIsGame: 1
   androidEnableBanner: 1
   m_AndroidBanners:
@@ -236,7 +236,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 4a63e974bf7b810448da5b3818a9de97, type: 3}
+      m_Icon: {fileID: 2800000, guid: cd39df6df18e7704b8d64d039ff29b93, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0

@@ -5,8 +5,7 @@ using UnityEngine;
 using DSMUI.Assets;
 
 /*
- * TODO:
- * Replace this man right here, just like the dialog he has a very ugly method.
+ * Deprecated.
  */
 
 public class MenuListControl : MonoBehaviour

@@ -6,6 +6,9 @@ using UnityEngine.UI;
 using UnityEngine;
 using DSMUI.Assets;
 
+
+//Deprecated.
+
 public class MenuItemControl : MonoBehaviour {
 
     Animator animataM;
@@ -57,7 +60,7 @@ public class MenuItemControl : MonoBehaviour {
 
     void OnMouseExit(){
         animataM.Play("menuOut");
-        StartCoroutine(GameObject.FindGameObjectWithTag("UIMenuSubtitle").GetComponent<MenuSubtitleController>().FadeTextOut());
+        //StartCoroutine(GameObject.FindGameObjectWithTag("UIMenuSubtitle").GetComponent<MenuSubtitleController>().FadeTextOut());
     }
 
 	public void killItem()

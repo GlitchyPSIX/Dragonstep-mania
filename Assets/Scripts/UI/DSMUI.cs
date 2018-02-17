@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
+
 namespace DSMUI
 {
     namespace Assets
@@ -53,12 +55,168 @@ namespace DSMUI
 
     namespace Objects
     {
+        /// <summary>
+        /// Class containing everything related to Menu items (Squares).
+        /// </summary>
+        public class MenuItem
+        {
+            // This is for the MenuItems that appear in menus like Main Menu.
+
+            private string subtitle;
+            private UnityAction action;
+            private string title;
+            private Sprite icon;
+            private AudioClip sfx;
+
+            public static GameObject MenuItemPrefab = Assets.Objects.MenuItemObject.gameObject;
+            GameObject returnedMenuItem = Object.Instantiate(MenuItemPrefab);
+            //ONE OF THESE MUST ALWAYS BE PRESENT
+            MenuSubtitleController subc = GameObject.FindGameObjectWithTag("UIMenuSubtitle").GetComponent<MenuSubtitleController>();
+
+            public UnityAction Action
+            {
+                get
+                {
+                    return action;
+                }
+
+                set
+                {
+                    EventTrigger evtTrig = returnedMenuItem.GetComponent<EventTrigger>();
+                    EventTrigger.Entry clickEntry = new EventTrigger.Entry
+                    {
+                        eventID = EventTriggerType.PointerDown
+                    };
+                    clickEntry.callback.AddListener((data) => Action());
+                    clickEntry.callback.AddListener((data) => { OnClick((PointerEventData)data); });
+                    evtTrig.triggers.Add(clickEntry);
+                    action = value;
+                }
+            }
+
+            public string Subtitle
+            {
+                get
+                {
+                    return subtitle;
+                }
+
+                set
+                {
+                    subtitle = value;
+                }
+            }
+
+            public string Title
+            {
+                get
+                {
+                    return title;
+                }
+
+                set
+                {
+                    title = value;
+                }
+            }
+
+            public Sprite Icon
+            {
+                get
+                {
+                    return icon;
+                }
+
+                set
+                {
+                    icon = value;
+                }
+            }
+
+            public AudioClip SFX
+            {
+                get
+                {
+                    return sfx;
+                }
+
+                set
+                {
+                    sfx = value;
+                }
+            }
+
+            public MenuItem()
+            {
+                EventTrigger evtTrig = returnedMenuItem.GetComponent<EventTrigger>();
+                EventTrigger.Entry hoverEntry = new EventTrigger.Entry();
+                EventTrigger.Entry exitEntry = new EventTrigger.Entry();
+
+                hoverEntry.eventID = EventTriggerType.PointerEnter;
+                exitEntry.eventID = EventTriggerType.PointerExit;
+
+                hoverEntry.callback.AddListener((data) => { OnMouseEnter((PointerEventData)data, Subtitle); });
+                exitEntry.callback.AddListener((data) => { OnMouseExit(); });
+                evtTrig.triggers.Add(exitEntry);
+                evtTrig.triggers.Add(hoverEntry);
+            }
+
+            void OnClick(PointerEventData data)
+            {
+                // When clicked (SFX, the other one is declared up there and it can be the action passed at construction time)
+                returnedMenuItem.GetComponent<AudioSource>().clip = SFX;
+                returnedMenuItem.GetComponent<AudioSource>().Play();
+            }
+
+            void OnMouseEnter(PointerEventData data, string Subt)
+            {
+                // Mouse hover (Animation and subtitle)
+                subc.ChangeText(Subt);
+                returnedMenuItem.GetComponent<AudioSource>().clip = Assets.SoundEffects.Hover;
+                returnedMenuItem.GetComponent<AudioSource>().Play();
+                returnedMenuItem.GetComponent<Animator>().Play("menuHover");
+            }
+
+            void OnMouseExit()
+            {
+                // Mouse Exit (Fade subtitle out)
+                returnedMenuItem.GetComponent<Animator>().Play("menuOut");
+                subc.FadeTextOut();
+            }
+
+            public void Show(Transform tr)
+            {
+                /* attach this menuitem to a transform that has the required components to be scrollable and stuff
+                 * the model one is in the scene called mainMenu
+                 * ----
+                 * apparently, attributes like Sprite and Text aren't added when a instance is just called
+                 * however, addcallback does. huh
+                */
+                returnedMenuItem.transform.Find("MenuBG").gameObject.transform.Find("Image").GetComponent<Image>().sprite = Icon;
+                returnedMenuItem.transform.Find("MenuBG").gameObject.transform.Find("Text").GetComponent<Text>().text = Title;
+                returnedMenuItem.SetActive(true);
+                returnedMenuItem.transform.SetParent(tr, false);
+                returnedMenuItem.GetComponent<Animator>().Play("menuComeIn");
+            }
+
+            public void Kill()
+            {
+                //Own method to destroy the gameobject we just made for the menu as we no longer need it.
+                returnedMenuItem.GetComponent<Animator>().Play("menuHide");
+                EventTrigger evtTrig = returnedMenuItem.GetComponent<EventTrigger>();
+                Object.Destroy(evtTrig, 0);
+                // all UI SFX should be no more than 1.5s.
+                Object.Destroy(returnedMenuItem, 1.5f);
+            }
+
+        }
+
+        /// <summary>
+        /// Class containing everything related to Dialogs.
+        /// <param name="Title">The title of the dialog</param>
+        /// </summary>
         public class Dialog
         {
-            /// <summary>
-            /// Class containing everything related to Dialogs.
-            /// </summary>
-
             public static GameObject DialogPrefab = Assets.Objects.DialogObject.gameObject;
             GameObject returnedDialog = Object.Instantiate(DialogPrefab);
             public string title;
@@ -81,9 +239,7 @@ namespace DSMUI
             public Dialog(string Title, string Body, string ButtonText, UnityAction Action, AudioClip ButtonSFX, Sprite Icon = null, AudioClip DialogSFX = null)
             {
                 /*
-                 * oh my god this is all so ugly
-                 * at least it's better than before
-                 * way better if I say so myself
+                 * hey this is nowhere as ugly as before
                  */
 
                 icon = returnedDialog.transform.Find("DialogBG").transform.Find("DialogIcon").transform.Find("DialogIconBG").transform.Find("Icon").gameObject;
@@ -248,6 +404,7 @@ namespace DSMUI
 
             public void ShowDialog()
             {
+                // the legend
                 returnedDialog.SetActive(true);
                 returnedDialog.transform.SetParent(GameObject.FindGameObjectWithTag("UICanvas").transform, false);
                 returnedDialog.GetComponent<Animator>().Play("Enter");
@@ -258,6 +415,7 @@ namespace DSMUI
             {
                 returnedDialog.GetComponent<Animator>().Play("Exit");
                 // all UI SFX should be no more than 1.2s.
+                // YEAH BECAUSE WHEN YOU DESTROY THE ENTIRE GAME OBJECT, THE AUDIOSOURCE DIES TOO AND THE AUDIO CUTS LUL
                 Object.Destroy(returnedDialog, 1.2f);
             }
 

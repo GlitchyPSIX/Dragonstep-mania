@@ -21,9 +21,7 @@ public class MenuSubtitleController : MonoBehaviour {
         ac.Play("changeSubtitleIn");
     }
 
-    public IEnumerator FadeTextOut(){
+    public void FadeTextOut(){
         ac.Play("changeSubtitleOut");
-        yield return new WaitUntil(() => ac.GetCurrentAnimatorStateInfo(0).IsName("Nothing"));
-        t.text = "";
     }
 }

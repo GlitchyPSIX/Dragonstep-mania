@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/debug.unity
     guid: 00000000000000000000000000000000
-  - enabled: 1
+  - enabled: 0
     path: Assets/TestFields/DialogsTest.unity
     guid: e087512197c47154e8b6637047c1d8a9
+  - enabled: 1
+    path: Assets/mainMenu.unity
+    guid: 3a334e5ca050d0d419e7c955ddfb46c2

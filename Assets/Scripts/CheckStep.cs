@@ -71,7 +71,8 @@ public class CheckStep : MonoBehaviour
         + "\n Is hurt?: " + GetComponent<CheckStep>().isHurt.ToString() +
         "\n Hurt Orientation: " + GetComponent<CheckStep>().hurtOrientation.ToString()
         + "\n Misses: " + GetComponent<CheckStep>().missCounter.ToString()
-        + "\n Sucessful hits: " + GetComponent<CheckStep>().hitCounter.ToString();
+        + "\n Sucessful hits: " + GetComponent<CheckStep>().hitCounter.ToString()
+        + "\n Snap: " + timeline.snap.ToString();
 
     }
 

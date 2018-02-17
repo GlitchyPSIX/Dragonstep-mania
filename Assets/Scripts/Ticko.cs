@@ -8,7 +8,7 @@ public class Ticko : MonoBehaviour
     public bool switchingStep;
     public double pastbeat = 0d;
     public float offset = 0;
-    public float beatcount = -1.0f;
+    public float beatcount = 1f;
     public float beatmultiplier;
     public float beatdur;
     public bool StepOnOffbeats = false;
@@ -32,6 +32,7 @@ public class Ticko : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         // every beat (With the multiplier in action, probably gonna use this for swing beats)
         if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
         {

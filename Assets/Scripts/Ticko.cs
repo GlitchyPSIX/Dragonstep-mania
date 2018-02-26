@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class Ticko : MonoBehaviour
 {
-    public bool switchingStep;
     public double pastbeat = 0d;
     public float offset = 0;
     public float beatcount = 1f;
@@ -14,6 +13,7 @@ public class Ticko : MonoBehaviour
     public bool StepOnOffbeats = false;
     GameObject[] BackgroundSwitchers;
     Timeline timeline;
+    CheckStep checkstepM;
 
     // This class holds the CPU logic (step each beat), and the step switch.
 
@@ -26,13 +26,14 @@ public class Ticko : MonoBehaviour
         //for every background stepswitcher
         BackgroundSwitchers = GameObject.FindGameObjectsWithTag("Background");
         timeline = GetComponent<Timeline>();
+        checkstepM = GetComponent<CheckStep>();
         StartCoroutine(addSampleBeatmap(0));
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        timeline.updateTimelinePosition();
         // every beat (With the multiplier in action, probably gonna use this for swing beats)
         if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
         {
@@ -75,13 +76,13 @@ public class Ticko : MonoBehaviour
             }
             timeline.switchStep(false);
             // ^ makes sure the beat is 1x when required (used to switch to offbeat)
+            
         }
-        timeline.updateTimelinePosition();
-        //if (Input.GetKeyDown("a"))
-        //{
-        //    //emergency switch
-        //    timeline.switchStep(true);
-        //}
+        if (Input.GetKeyDown("a"))
+        {
+            //pause and unpause
+            AudioListener.pause = !AudioListener.pause;
+        }
 
         if (Input.GetKeyDown("d"))
         {
@@ -96,25 +97,22 @@ public class Ticko : MonoBehaviour
         if (sample == 0)
         {
             //sample beatmap
-            timeline.addAction(4, 1, "2");
-            timeline.addAction(5, 3, "1");
+            timeline.addAction(5, 0.5f, "1");
+            timeline.addAction(1, 4, "1");
             timeline.addAction(1, 6, "1");
-            timeline.addAction(2, 7);
-            timeline.addAction(8, 7, "cowbell");
-            timeline.addAction(8, 12.5f, "cowbell");
-            timeline.addAction(8, 13.5f, "cowbell");
-            timeline.addAction(8, 14.5f, "cowbell");
-            timeline.addAction(2, 15.5f);
-            timeline.addAction(8, 15.5f, "cowbell");
-            timeline.addAction(8, 20, "cowbell");
+            timeline.addAction(2, 8f);
+            timeline.addAction(8, 13f, "cowbell");
+            timeline.addAction(8, 14f, "cowbell");
+            timeline.addAction(8, 15f, "cowbell");
+            timeline.addAction(2, 14.5f);
             timeline.addAction(8, 21, "cowbell");
             timeline.addAction(8, 22, "cowbell");
-            timeline.addAction(2, 23);
             timeline.addAction(8, 23, "cowbell");
-            timeline.addAction(8, 28.5f, "cowbell");
+            timeline.addAction(2, 22.5f);
             timeline.addAction(8, 29.5f, "cowbell");
             timeline.addAction(8, 30.5f, "cowbell");
-            timeline.addAction(2, 31.5f);
+            timeline.addAction(8, 31.5f, "cowbell");
+            timeline.addAction(2, 30.5f);
             timeline.addAction(8, 31.5f, "cowbell");
         }
         else if (sample == 1){

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 namespace DSMUI
 {
@@ -422,5 +423,39 @@ namespace DSMUI
         }
 
     }
+
+    namespace Actions
+    {
+        public class TransitionActions {
+
+            GameObject TransitionController;
+            static MonoBehaviour monob = new MonoBehaviour();
+
+            public TransitionActions()
+            {
+                TransitionController = GameObject.FindGameObjectWithTag("UITransitionMask");
+            }
+
+            public void StartSceneTransition(string scenepath, Sprite mask)
+            {
+                monob.StartCoroutine(GotoScene(scenepath, mask));
+            }
+
+            private IEnumerator GotoScene(string scenetgt, Sprite face)
+            {
+                AsyncOperation IsSceneLoaded = SceneManager.LoadSceneAsync(scenetgt);
+                Debug.Log("yeehaw");
+                TransitionController.GetComponent<TransitionControl>().PlayTransition(face, false);
+                IsSceneLoaded.allowSceneActivation = false;
+                yield return new WaitUntil(() => TransitionController.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("finalizeTransition") == true);
+                yield return new WaitUntil(() => IsSceneLoaded.progress == 0.9f);
+                Debug.Log("I'm alive");
+                TransitionController.GetComponent<TransitionControl>().PlayTransition(face, true);
+                IsSceneLoaded.allowSceneActivation = true;
+            }
+
+        }
+    }
+
 }
 

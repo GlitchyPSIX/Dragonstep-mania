@@ -14,6 +14,7 @@ public class Conductor : MonoBehaviour
     public double songposition;
     double dspOffset = 0d;
     public AudioSource song;
+    public AudioListener gameSpeaker;
 
     public bool trainingMode;
 
@@ -21,7 +22,7 @@ public class Conductor : MonoBehaviour
     void Start()
     {
         song = GetComponent<AudioSource>();
-        resetStartOfSong();
+        resetStartOfSong(false);
     }
 
     // Update is called once per frame
@@ -30,7 +31,11 @@ public class Conductor : MonoBehaviour
         songposition = ((double)(AudioSettings.dspTime) - dspOffset) * song.pitch - offset;
     }
 
-    public void resetStartOfSong(){
+    public void resetStartOfSong(bool pauseAtStart){
         dspOffset = AudioSettings.dspTime;
+        if (pauseAtStart) { 
+            AudioListener.pause = true;
+        }
     }
+
 }

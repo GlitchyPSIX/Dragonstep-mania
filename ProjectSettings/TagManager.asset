@@ -9,6 +9,8 @@ TagManager:
   - UICanvas
   - UIMenuContainer
   - UIMenuSubtitle
+  - UITransitionMask
+  - GameSpeaker
   layers:
   - Default
   - TransparentFX

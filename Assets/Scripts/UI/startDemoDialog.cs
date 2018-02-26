@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using DSMUI.Assets;
 using DSMUI.Objects;
+using DSMUI.Actions;
 
 public class startDemoDialog : MonoBehaviour
 {
-
-    DSMUI.Objects.Dialog dialogObj;
+    Dialog dialogObj;
     Transform containerTransform;
     List<MenuItem> mlm;
+    TransitionActions tra = new TransitionActions();
 
     // Use this for initialization
     void Start()
@@ -22,7 +23,7 @@ public class startDemoDialog : MonoBehaviour
                 Title = "Play Demo",
                 Subtitle = "Play a sample song.",
                 Icon = InterfaceIcons.Play,
-                Action = UnimplementedFunctionDialog,
+                Action = StartGame,
                 SFX = SoundEffects.Select
             },
             new MenuItem()
@@ -66,6 +67,12 @@ public class startDemoDialog : MonoBehaviour
             SoundEffects.Select, InterfaceIcons.Warning, SoundEffects.DialogDefault);
         dialogObj.ShowDialog();
     }
+
+    void StartGame()
+    {
+        tra.StartSceneTransition("GameScreen", Transitions.Wink);
+    }
+
     void StartDemoDialogAfter()
     {
         //dialogObj = Instantiate(Objects.DialogObject);

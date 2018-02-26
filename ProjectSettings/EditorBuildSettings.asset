@@ -9,11 +9,11 @@ EditorBuildSettings:
     path: Assets/TitleScreen.unity
     guid: d6fcd00f9eb761e4ebd7770928bb7483
   - enabled: 0
-    path: Assets/debug.unity
-    guid: 00000000000000000000000000000000
-  - enabled: 0
     path: Assets/TestFields/DialogsTest.unity
     guid: e087512197c47154e8b6637047c1d8a9
   - enabled: 1
     path: Assets/mainMenu.unity
     guid: 3a334e5ca050d0d419e7c955ddfb46c2
+  - enabled: 1
+    path: Assets/GameScreen.unity
+    guid: a07c96c91715c1c4c94226a87a0a1664

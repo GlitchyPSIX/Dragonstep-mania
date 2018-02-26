@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 
 public class TransitionControl : MonoBehaviour
 {
@@ -15,6 +15,7 @@ public class TransitionControl : MonoBehaviour
     {
         ac = GetComponent<Animator>();
         maskimage = transform.Find("Mask").GetComponent<Image>();
+        DontDestroyOnLoad(gameObject);
     }
 
     public void PlayTransition(Sprite face, bool comingIn)
@@ -29,4 +30,5 @@ public class TransitionControl : MonoBehaviour
             ac.Play("transitionOut");
         }
     }
+
 }

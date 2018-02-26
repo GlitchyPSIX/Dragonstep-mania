@@ -10,11 +10,13 @@ public class Timeline : MonoBehaviour
     List<actionElement> actionList;
     List<actionElement> surfaceActionList;
     Ticko updater;
+    CheckStep checkstepM;
     public bool isPreparing;
     public bool stayStill;
     public bool autoMode = true;
-    double pastHalfbeat;
+    double pastRevolution;
     public float snap;
+    public bool switchingStep;
 
     // Use this for initialization
     void Start()
@@ -22,7 +24,7 @@ public class Timeline : MonoBehaviour
         actionList = new List<actionElement>();
         surfaceActionList = new List<actionElement>();
         updater = GetComponent<Ticko>();
-        pastHalfbeat = updater.pastbeat;
+        checkstepM = GetComponent<CheckStep>();
         snap = 0.125f;
     }
 
@@ -45,14 +47,14 @@ public class Timeline : MonoBehaviour
     {
         foreach (actionElement item in actionList)
         {
-            if (item.position == (updater.beatcount + snap))
+            if (item.position == (updater.beatcount))
             {
                 performAction(item.action, item.arg1);
             }
         }
         foreach (actionElement item in surfaceActionList)
         {
-            if (item.position == (updater.beatcount + snap))
+            if (item.position == (updater.beatcount))
             {
                 performAction(item.action, item.arg1);
             }
@@ -61,138 +63,152 @@ public class Timeline : MonoBehaviour
 
     public void updateTimelinePosition()
     {
-        if (GetComponent<Conductor>().songposition + updater.offset > pastHalfbeat + (updater.beatdur * snap))
+        if (GetComponent<Conductor>().songposition + updater.offset > pastRevolution + (updater.beatdur * snap))
         {
-            pastHalfbeat += (updater.beatdur * snap);
             checkTimeline();
             updater.beatcount += snap;
+            pastRevolution += (updater.beatdur * snap);
         }
+
     }
 
     void performAction(byte actionType, string argument1 = "")
     {
         Debug.Log("Performing action: " + actionType.ToString());
-        if (actionType == 8)
+        switch (actionType)
         {
-            //playSound
-            playSound(argument1);
+            case 0:
+                {
+                    //Prepare
+                    togglePrepare(int.Parse(argument1), true, false);
+                    break;
+                }
+            case 1:
+                {
+                    //Stop prepare
+                    togglePrepare(1, false, false);
+                    break;
+                }
+            case 2:
+                {
+                    //Switch beat
+                    switchStep(true);
+                    break;
+                }
+            case 3:
+                {
+                    //Swing tail
+                    break;
+                }
+            case 4:
+                {
+                    //Stay Still (Preparing) (Also affects CPU)
+                    togglePrepare(int.Parse(argument1), true, true);
+                    break;
+                }
+            case 5:
+                {
+                    //Move Again (Preparing) (Also affects CPU)
+                    togglePrepare(int.Parse(argument1), true, false);
+                    break;
+                }
+            case 6:
+                {
+                    //Toggle Auto
+                    autoMode = !autoMode;
+                    break;
+                }
+            case 7:
+                {
+                    //End game
+                    break;
+                }
+            case 8:
+                {
+                    //playSound
+                    playSound(argument1);
+                    break;
+                }
+            case 9:
+                {
+                    //Change snap
+                    snap = int.Parse(argument1);
+                    break;
+                }
         }
-        if (actionType == 0)
-        {
-            //Prepare
-            togglePrepare(int.Parse(argument1), true, false);
         }
-        if (actionType == 1)
-        {
-            //Stop prepare
-            togglePrepare(1, false, false);
-        }
-        if (actionType == 2)
-        {
-            //Switch beat
-            switchStep(true);
-        }
-        if (actionType == 3)
-        {
-            //Swing tail
-        }
-        if (actionType == 4)
-        {
-            //Stay Still (Preparing) (Also affects CPU)
-            togglePrepare(int.Parse(argument1), true, true);
-        }
-        if (actionType == 5)
-        {
-            //Move Again (Preparing) (Also affects CPU)
-            togglePrepare(int.Parse(argument1), true, false);
-        }
-        if (actionType == 6)
-        {
-            //Toggle Auto
-            autoMode = !autoMode;
-        }
-        if (actionType == 7)
-        {
-            //End game
-        }
-        if (actionType == 9)
-        {
-            //Change snap
-            snap = int.Parse(argument1);
-        }
-    }
 
-    //ACTIONS START
-    #region actions
-    public void switchStep(bool halveBeat)
-    {
+        //ACTIONS START
+        #region actions
+        public void switchStep(bool halveBeat)
+        {
         if (halveBeat == false)
-        {
-            //bring back the multiplier to one if we're transitioning, offbeat transition stopped
-            if (updater.switchingStep == true)
             {
-                updater.StepOnOffbeats = !updater.StepOnOffbeats;
-                updater.beatmultiplier = 1;
-                updater.switchingStep = false;
+                //bring back the multiplier to one if we're transitioning, offbeat transition stopped
+                if (switchingStep == true)
+                {
+                    updater.StepOnOffbeats = !updater.StepOnOffbeats;
+                    updater.beatmultiplier = 1;
+                    switchingStep = false;
             }
-            else //if it's already off-transition
-            {
+                else //if it's already off-transition
+                {
                 updater.pastbeat += (updater.beatdur * updater.beatmultiplier);
+                checkstepM.CheckMiss(1.15f);
             }
-        }
-        else if (halveBeat == true)
-        {
+            }
+            else if (halveBeat == true)
+            {
             //halve the multiplier for a "beat", reduce the last beat by half a beat, so it goes into the backbeat
-            updater.beatmultiplier = 0.5f;
-            updater.switchingStep = true;
             updater.pastbeat += (updater.beatdur * updater.beatmultiplier);
+            switchingStep = true;
+            updater.beatmultiplier = 0.5f;
+            updater.pastbeat -= (updater.beatdur * updater.beatmultiplier);
         }
-
-
     }
 
-    public void togglePrepare(float multiplier, bool active, bool doNotMove)
-    {
-        if (active == true)
+        public void togglePrepare(float multiplier, bool active, bool doNotMove)
         {
-            updater.beatmultiplier = multiplier;
-            isPreparing = true;
-            if (doNotMove)
+            if (active == true)
             {
-                stayStill = true;
+                updater.beatmultiplier = multiplier;
+                isPreparing = true;
+                if (doNotMove)
+                {
+                    stayStill = true;
+                }
+                else
+                {
+                    stayStill = false;
+                }
             }
-            else
+            else if (active == false)
             {
+                updater.beatmultiplier = 1;
                 stayStill = false;
+                isPreparing = false;
             }
         }
-        else if (active == false)
+        public void playSound(string soundFile)
         {
-            updater.beatmultiplier = 1;
-            stayStill = false;
-            isPreparing = false;
+            AudioClip soundtoplay;
+            soundtoplay = Resources.Load<AudioClip>("Sounds/SFX/" + soundFile);
+            GameObject.FindGameObjectWithTag("Player").GetComponent<AudioSource>().PlayOneShot(soundtoplay);
+        }
+        #endregion
+
+    }
+
+    struct actionElement
+    {
+        public float position;
+        public byte action;
+        public string arg1;
+
+        public actionElement(byte act, float pos, string a1 = "")
+        {
+            position = pos;
+            action = act;
+            arg1 = a1;
         }
     }
-    public void playSound(string soundFile)
-    {
-        AudioClip soundtoplay;
-        soundtoplay = Resources.Load<AudioClip>("Sounds/SFX/" + soundFile);
-        GameObject.FindGameObjectWithTag("Player").GetComponent<AudioSource>().PlayOneShot(soundtoplay);
-    }
-    #endregion
-
-}
-
-struct actionElement
-{
-    public float position;
-    public byte action;
-    public string arg1;
-
-    public actionElement(byte act, float pos, string a1 = "")
-    {
-        position = pos;
-        action = act;
-        arg1 = a1;
-    }
-}

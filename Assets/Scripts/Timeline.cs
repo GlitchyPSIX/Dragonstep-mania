@@ -10,6 +10,15 @@ public class Timeline : MonoBehaviour
     List<actionElement> actionList;
     List<actionElement> surfaceActionList;
     Ticko updater;
+
+    public double pastbeat = 0d;
+    public float offset = 0;
+    public float beatcount = 1f;
+    public float beatmultiplier;
+    public float beatdur;
+    public bool StepOnOffbeats = false;
+    GameObject[] BackgroundSwitchers;
+
     CheckStep checkstepM;
     public bool isPreparing;
     public bool stayStill;
@@ -24,9 +33,79 @@ public class Timeline : MonoBehaviour
         actionList = new List<actionElement>();
         surfaceActionList = new List<actionElement>();
         updater = GetComponent<Ticko>();
+        //brought from Ticko
+        //Specify beatduration and background stepswitchers
+        beatmultiplier = 1f;
+        beatdur = (60 / GetComponent<Conductor>().bpm);
+        //for every background stepswitcher
+        BackgroundSwitchers = GameObject.FindGameObjectsWithTag("Background");
+        checkstepM = GetComponent<CheckStep>();
+        StartCoroutine(addSampleBeatmap(0));
+
         checkstepM = GetComponent<CheckStep>();
         snap = 0.125f;
     }
+
+    void Update()
+    {
+        updateTimelinePosition();
+        // every beat (With the multiplier in action, probably gonna use this for swing beats)
+        if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
+        {
+            // AUTO / PREPARE
+            if (autoMode == true || isPreparing == true)
+            {
+                GetComponent<CheckStep>().performStep();
+            }
+            /* CPU LOGIC START
+            */
+            if (StepOnOffbeats == true && stayStill == false)
+            {
+                //if offbeat
+                foreach (GameObject switcher in BackgroundSwitchers)
+                {
+                    switcher.GetComponent<Step>().OffBeatStep();
+                }
+
+            }
+            else if (StepOnOffbeats == false && stayStill == false)
+            {
+                //if not offbeat
+                //if Preparing is enabled
+                if (isPreparing)
+                {
+                    foreach (GameObject switcher in BackgroundSwitchers)
+                    {
+                        switcher.GetComponent<Step>().PrepareStep();
+                    }
+                }
+                //if Preparing is disabled
+                else if (!(isPreparing))
+                {
+                    foreach (GameObject switcher in BackgroundSwitchers)
+                    {
+                        switcher.GetComponent<Step>().OnBeatStep();
+                    }
+                }
+
+            }
+            switchStep(false);
+            // ^ makes sure the beat is 1x when required (used to switch to offbeat)
+
+        }
+        if (Input.GetKeyDown("a"))
+        {
+            //pause and unpause
+            AudioListener.pause = !AudioListener.pause;
+        }
+
+        if (Input.GetKeyDown("d"))
+        {
+            //toggle Auto
+            autoMode = !autoMode;
+        }
+    }
+
 
     public void addAction(byte actionType, float position, string argument1 = "")
     {
@@ -47,14 +126,14 @@ public class Timeline : MonoBehaviour
     {
         foreach (actionElement item in actionList)
         {
-            if (item.position == (updater.beatcount))
+            if (item.position == (beatcount))
             {
                 performAction(item.action, item.arg1);
             }
         }
         foreach (actionElement item in surfaceActionList)
         {
-            if (item.position == (updater.beatcount))
+            if (item.position == (beatcount))
             {
                 performAction(item.action, item.arg1);
             }
@@ -63,11 +142,11 @@ public class Timeline : MonoBehaviour
 
     public void updateTimelinePosition()
     {
-        if (GetComponent<Conductor>().songposition + updater.offset > pastRevolution + (updater.beatdur * snap))
+        if (GetComponent<Conductor>().songposition + offset > pastRevolution + (beatdur * snap))
         {
             checkTimeline();
-            updater.beatcount += snap;
-            pastRevolution += (updater.beatdur * snap);
+            beatcount += snap;
+            pastRevolution += (beatdur * snap);
         }
 
     }
@@ -147,23 +226,23 @@ public class Timeline : MonoBehaviour
                 //bring back the multiplier to one if we're transitioning, offbeat transition stopped
                 if (switchingStep == true)
                 {
-                    updater.StepOnOffbeats = !updater.StepOnOffbeats;
-                    updater.beatmultiplier = 1;
+                    StepOnOffbeats = !StepOnOffbeats;
+                    beatmultiplier = 1;
                     switchingStep = false;
             }
                 else //if it's already off-transition
                 {
-                updater.pastbeat += (updater.beatdur * updater.beatmultiplier);
+                pastbeat += (beatdur * beatmultiplier);
                 checkstepM.CheckMiss(1.15f);
             }
             }
             else if (halveBeat == true)
             {
             //halve the multiplier for a "beat", reduce the last beat by half a beat, so it goes into the backbeat
-            updater.pastbeat += (updater.beatdur * updater.beatmultiplier);
+            pastbeat += (beatdur * beatmultiplier);
             switchingStep = true;
-            updater.beatmultiplier = 0.5f;
-            updater.pastbeat -= (updater.beatdur * updater.beatmultiplier);
+            beatmultiplier = 0.5f;
+            pastbeat -= (beatdur * beatmultiplier);
         }
     }
 
@@ -171,7 +250,7 @@ public class Timeline : MonoBehaviour
         {
             if (active == true)
             {
-                updater.beatmultiplier = multiplier;
+                beatmultiplier = multiplier;
                 isPreparing = true;
                 if (doNotMove)
                 {
@@ -184,7 +263,7 @@ public class Timeline : MonoBehaviour
             }
             else if (active == false)
             {
-                updater.beatmultiplier = 1;
+                beatmultiplier = 1;
                 stayStill = false;
                 isPreparing = false;
             }
@@ -195,9 +274,49 @@ public class Timeline : MonoBehaviour
             soundtoplay = Resources.Load<AudioClip>("Sounds/SFX/" + soundFile);
             GameObject.FindGameObjectWithTag("Player").GetComponent<AudioSource>().PlayOneShot(soundtoplay);
         }
-        #endregion
+    #endregion
 
+    IEnumerator addSampleBeatmap(byte sample = 0)
+    {
+        yield return new WaitForEndOfFrame();
+        if (sample == 0)
+        {
+            //sample beatmap
+            addAction(5, 0.5f, "1");
+            addAction(1, 4, "1");
+            addAction(1, 6, "1");
+            addAction(2, 8f);
+            addAction(8, 13f, "cowbell");
+            addAction(8, 14f, "cowbell");
+            addAction(8, 15f, "cowbell");
+            addAction(2, 14.5f);
+            addAction(8, 21, "cowbell");
+            addAction(8, 22, "cowbell");
+            addAction(8, 23, "cowbell");
+            addAction(2, 22.5f);
+            addAction(8, 29.5f, "cowbell");
+            addAction(8, 30.5f, "cowbell");
+            addAction(8, 31.5f, "cowbell");
+            addAction(2, 30.5f);
+            addAction(8, 31.5f, "cowbell");
+        }
+        else if (sample == 1)
+        {
+            addAction(0, 1, "1");
+            addAction(4, 0, "1");
+            addAction(0, 12, "3");
+            addAction(0, 24, "1");
+            addAction(2, 35);
+            addAction(2, 36);
+            addAction(1, 29);
+            addAction(2, 54);
+            addAction(2, 68);
+            addAction(2, 77);
+            addAction(2, 78);
+        }
     }
+
+}
 
     struct actionElement
     {

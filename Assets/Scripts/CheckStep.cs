@@ -29,30 +29,31 @@ public class CheckStep : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        beatdur = GetComponent<Ticko>().beatdur * GetComponent<Ticko>().beatmultiplier;
-        beatMultiplier = GetComponent<Ticko>().beatmultiplier;
         timeline = GetComponent<Timeline>();
+        beatdur = timeline.beatdur * timeline.beatmultiplier;
+        beatMultiplier = timeline.beatmultiplier;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        beatdur = GetComponent<Ticko>().beatdur * GetComponent<Ticko>().beatmultiplier;
+        beatdur = timeline.beatdur * timeline.beatmultiplier;
         if (Input.GetButtonDown("Step"))
         {
             //if inside the margin
             if (
                     (
-                        ((GetComponent<Conductor>().songposition < (GetComponent<Ticko>().pastbeat + (0.25f * beatdur))
+                        ((GetComponent<Conductor>().songposition < (timeline.pastbeat + (0.25f * beatdur))
                         )
                             ||
-                        (GetComponent<Conductor>().songposition > (GetComponent<Ticko>().pastbeat + (0.75f * beatdur))
+                        (GetComponent<Conductor>().songposition > (timeline.pastbeat + (0.75f * beatdur))
                         ))
                     ) && timeline.autoMode == false
                 )
             {
                 performStep();
-                caughtPosition = (GetComponent<Conductor>().songposition - GetComponent<Ticko>().pastbeat);
+                caughtPosition = (GetComponent<Conductor>().songposition - timeline.pastbeat);
             }
             else
             {
@@ -61,16 +62,16 @@ public class CheckStep : MonoBehaviour
             }
         }
         //show info
-        OSText.text = "Beat count:" + GetComponent<Ticko>().beatcount.ToString() +
-        "\n" + "Song offset: " + (GetComponent<Conductor>().songposition + GetComponent<Ticko>().offset).ToString() +
+        OSText.text = "Beat count:" + timeline.beatcount.ToString() +
+        "\n" + "Song offset: " + (GetComponent<Conductor>().songposition + timeline.offset).ToString() +
         "\nLast Hit: " + pastHitPos.ToString() + "\n"
-        + "Last beat: " + (GetComponent<Ticko>().pastbeat - (0.3 * (beatdur * GetComponent<Ticko>().beatmultiplier))).ToString()
+        + "Last beat: " + (timeline.pastbeat - (0.3 * (beatdur * timeline.beatmultiplier))).ToString()
         + "\n Is hurt?: " + GetComponent<CheckStep>().isHurt.ToString() +
         "\n Hurt Orientation: " + GetComponent<CheckStep>().hurtOrientation.ToString()
         + "\n Misses: " + GetComponent<CheckStep>().missCounter.ToString()
         + "\n Sucessful hits: " + GetComponent<CheckStep>().hitCounter.ToString()
         + "\n Snap: " + timeline.snap.ToString()
-        + "\n Difference:" + (GetComponent<Conductor>().songposition - GetComponent<Ticko>().pastbeat).ToString();
+        + "\n Difference:" + (GetComponent<Conductor>().songposition - timeline.pastbeat).ToString();
 
     }
 
@@ -88,24 +89,24 @@ public class CheckStep : MonoBehaviour
           Not working as expected.
           Classic...
         */
-        if (pastHitPos > GetComponent<Ticko>().pastbeat)
+        if (pastHitPos > timeline.pastbeat)
         {
-            pastHitPos += (beatdur - ((GetComponent<Conductor>().songposition - GetComponent<Ticko>().pastbeat) * 0.75));
+            pastHitPos += (beatdur - ((GetComponent<Conductor>().songposition - timeline.pastbeat) * 0.75));
         }
-        else if (pastHitPos < GetComponent<Ticko>().pastbeat)
+        else if (pastHitPos < timeline.pastbeat)
         {
             pastHitPos += (beatdur);
         }
             isHurt = false;
-        if ((timeline.isPreparing) && (!(GetComponent<Ticko>().StepOnOffbeats)) && timeline.stayStill == false) //If onbeat(default) AND is preparing
+        if ((timeline.isPreparing) && (!(timeline.StepOnOffbeats)) && timeline.stayStill == false) //If onbeat(default) AND is preparing
         {
             GameObject.FindWithTag("Player").GetComponent<Step>().PrepareStep();
         }
-        else if (!(GetComponent<Ticko>().StepOnOffbeats) && timeline.stayStill == false) //If onbeat
+        else if (!(timeline.StepOnOffbeats) && timeline.stayStill == false) //If onbeat
         {
             GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatStep();
         }
-        else if ((GetComponent<Ticko>().StepOnOffbeats) && timeline.stayStill == false) //If at backbeat
+        else if ((timeline.StepOnOffbeats) && timeline.stayStill == false) //If at backbeat
         {
             GameObject.FindWithTag("Player").GetComponent<Step>().OffBeatStep();
         }
@@ -130,13 +131,13 @@ public class CheckStep : MonoBehaviour
                     if (!timeline.switchingStep)
                     {
                         {
-                            if (!(GetComponent<Ticko>().StepOnOffbeats))
+                            if (!(timeline.StepOnOffbeats))
                             {
                                 GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatMiss();
                                 hurtOrientation = 0;
 
                             }
-                            else if ((GetComponent<Ticko>().StepOnOffbeats))
+                            else if ((timeline.StepOnOffbeats))
                             {
                                 GameObject.FindWithTag("Player").GetComponent<Step>().OffBeatMiss();
                                 hurtOrientation = 1;
@@ -157,12 +158,12 @@ public class CheckStep : MonoBehaviour
                     if (!timeline.switchingStep)
                     {
                         {
-                            if (hurtOrientation == 1 && !(GetComponent<Ticko>().StepOnOffbeats))
+                            if (hurtOrientation == 1 && !(timeline.StepOnOffbeats))
                             {
                                 GameObject.FindWithTag("Player").GetComponent<Step>().OnBeatMiss();
                                 hurtOrientation = 0;
                             }
-                            else if (hurtOrientation == 0 && (GetComponent<Ticko>().StepOnOffbeats))
+                            else if (hurtOrientation == 0 && (timeline.StepOnOffbeats))
                             {
                                 GameObject.FindWithTag("Player").GetComponent<Step>().OffBeatMiss();
                                 hurtOrientation = 1;

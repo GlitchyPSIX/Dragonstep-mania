@@ -44,16 +44,16 @@ public class CheckStep : MonoBehaviour
             //if inside the margin
             if (
                     (
-                        ((GetComponent<Conductor>().songposition < (timeline.pastbeat + (0.25f * beatdur))
+                        ((GetComponent<Conductor>().songposition > (timeline.pastbeat + (0.75f * beatdur))
                         )
                             ||
-                        (GetComponent<Conductor>().songposition > (timeline.pastbeat + (0.75f * beatdur))
+                        (GetComponent<Conductor>().songposition < (timeline.pastbeat + (0.25f * beatdur))
                         ))
                     ) && timeline.autoMode == false
                 )
             {
-                performStep();
                 caughtPosition = (GetComponent<Conductor>().songposition - timeline.pastbeat);
+                StartCoroutine(performStep());
             }
             else
             {
@@ -65,7 +65,7 @@ public class CheckStep : MonoBehaviour
         OSText.text = "Beat count:" + timeline.beatcount.ToString() +
         "\n" + "Song offset: " + (GetComponent<Conductor>().songposition + timeline.offset).ToString() +
         "\nLast Hit: " + pastHitPos.ToString() + "\n"
-        + "Last beat: " + (timeline.pastbeat - (0.3 * (beatdur * timeline.beatmultiplier))).ToString()
+        + "Last beat: " + (timeline.pastbeat).ToString()
         + "\n Is hurt?: " + GetComponent<CheckStep>().isHurt.ToString() +
         "\n Hurt Orientation: " + GetComponent<CheckStep>().hurtOrientation.ToString()
         + "\n Misses: " + GetComponent<CheckStep>().missCounter.ToString()
@@ -75,7 +75,7 @@ public class CheckStep : MonoBehaviour
 
     }
 
-    public void performStep()
+    public IEnumerator performStep()
     {
         //add a successful hit
         hitCounter++;
@@ -89,14 +89,7 @@ public class CheckStep : MonoBehaviour
           Not working as expected.
           Classic...
         */
-        if (pastHitPos > timeline.pastbeat)
-        {
-            pastHitPos += (beatdur - ((GetComponent<Conductor>().songposition - timeline.pastbeat) * 0.75));
-        }
-        else if (pastHitPos < timeline.pastbeat)
-        {
-            pastHitPos += (beatdur);
-        }
+        pastHitPos += (beatdur - (beatdur - (beatdur * 0.75f)));
             isHurt = false;
         if ((timeline.isPreparing) && (!(timeline.StepOnOffbeats)) && timeline.stayStill == false) //If onbeat(default) AND is preparing
         {
@@ -114,16 +107,17 @@ public class CheckStep : MonoBehaviour
         {
             // Do not play any animation.
         }
+        yield return null;
     }
 
-    public void CheckMiss(float treshold = 1.15f)
+    public IEnumerator CheckMiss(float treshold = 1.15f)
     {
         if (GetComponent<Timeline>().autoMode == false)
         {
             if (!isHurt)
             {
                 //if NOT hurt, wait a little bit after the last beat (chance window)
-                if (GetComponent<Conductor>().songposition > (pastHitPos + (treshold * beatdur)))
+                if (GetComponent<Conductor>().songposition > (pastHitPos + (beatdur + (treshold * beatdur))))
                 {
                     //add miss and perform correct animation
                     isHurt = true;
@@ -144,7 +138,7 @@ public class CheckStep : MonoBehaviour
                             }
                         }
                     }
-                    pastHitPos += (beatdur);
+                    pastHitPos += (beatdur - ((beatdur * treshold) - beatdur));
                 }
             }
             else if (isHurt)
@@ -179,6 +173,6 @@ public class CheckStep : MonoBehaviour
                 //AUTO is enabled, no miss check should take in place.
             }
         }
-
+        yield return null;
     }
 }

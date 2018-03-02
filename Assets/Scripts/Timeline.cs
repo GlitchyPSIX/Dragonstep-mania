@@ -11,14 +11,14 @@ public class Timeline : MonoBehaviour
     List<actionElement> surfaceActionList;
     Ticko updater;
 
-    public double pastbeat = 0d;
+    public double pastbeat;
     public float offset = 0;
-    public float beatcount = 1f;
+    public float beatcount = -1f;
     public float beatmultiplier;
     public float beatdur;
     public bool StepOnOffbeats = false;
     GameObject[] BackgroundSwitchers;
-
+    Conductor conductor;
     CheckStep checkstepM;
     public bool isPreparing;
     public bool stayStill;
@@ -40,22 +40,23 @@ public class Timeline : MonoBehaviour
         //for every background stepswitcher
         BackgroundSwitchers = GameObject.FindGameObjectsWithTag("Background");
         checkstepM = GetComponent<CheckStep>();
-        StartCoroutine(addSampleBeatmap(0));
+        StartCoroutine(addSampleBeatmap(1));
 
+        conductor = GetComponent<Conductor>();
         checkstepM = GetComponent<CheckStep>();
         snap = 0.125f;
     }
 
     void Update()
     {
-        updateTimelinePosition();
+        StartCoroutine(updateTimelinePosition());
         // every beat (With the multiplier in action, probably gonna use this for swing beats)
         if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
         {
             // AUTO / PREPARE
             if (autoMode == true || isPreparing == true)
             {
-                GetComponent<CheckStep>().performStep();
+                StartCoroutine(checkstepM.performStep());
             }
             /* CPU LOGIC START
             */
@@ -89,6 +90,7 @@ public class Timeline : MonoBehaviour
                 }
 
             }
+            
             switchStep(false);
             // ^ makes sure the beat is 1x when required (used to switch to offbeat)
 
@@ -122,36 +124,39 @@ public class Timeline : MonoBehaviour
 
     }
 
-    public void checkTimeline()
+    public IEnumerator updateTimelinePosition()
+    {
+        if (GetComponent<Conductor>().songposition + offset > pastRevolution + (beatdur * snap))
+        {
+            StartCoroutine(checkTimeline());
+            beatcount += snap;
+            pastRevolution += (beatdur * snap);
+        }
+        yield return null;
+    }
+
+    public IEnumerator checkTimeline()
     {
         foreach (actionElement item in actionList)
         {
             if (item.position == (beatcount))
             {
-                performAction(item.action, item.arg1);
+                StartCoroutine(performAction(item.action, item.arg1));
             }
         }
         foreach (actionElement item in surfaceActionList)
         {
             if (item.position == (beatcount))
             {
-                performAction(item.action, item.arg1);
+                StartCoroutine(performAction(item.action, item.arg1));
             }
         }
+        yield return null;
     }
 
-    public void updateTimelinePosition()
-    {
-        if (GetComponent<Conductor>().songposition + offset > pastRevolution + (beatdur * snap))
-        {
-            checkTimeline();
-            beatcount += snap;
-            pastRevolution += (beatdur * snap);
-        }
 
-    }
 
-    void performAction(byte actionType, string argument1 = "")
+    IEnumerator performAction(byte actionType, string argument1 = "")
     {
         Debug.Log("Performing action: " + actionType.ToString());
         switch (actionType)
@@ -214,66 +219,72 @@ public class Timeline : MonoBehaviour
                     snap = int.Parse(argument1);
                     break;
                 }
+            case 12:
+                {
+                    //Restart beatmap
+                    StartCoroutine(conductor.resetBeatmap());
+                    break;
+                }
         }
-        }
+        yield return null;
+    }
 
-        //ACTIONS START
-        #region actions
-        public void switchStep(bool halveBeat)
-        {
+    //ACTIONS START
+    #region actions
+    public void switchStep(bool halveBeat)
+    {
         if (halveBeat == false)
+        {
+            //bring back the multiplier to one if we're transitioning, offbeat transition stopped
+            if (switchingStep == true)
             {
-                //bring back the multiplier to one if we're transitioning, offbeat transition stopped
-                if (switchingStep == true)
-                {
-                    StepOnOffbeats = !StepOnOffbeats;
-                    beatmultiplier = 1;
-                    switchingStep = false;
+                StepOnOffbeats = !StepOnOffbeats;
+                beatmultiplier = 1;
+                switchingStep = false;
             }
-                else //if it's already off-transition
-                {
+            else //if it's already off-transition
+            {
+                StartCoroutine(checkstepM.CheckMiss(0.30f));
                 pastbeat += (beatdur * beatmultiplier);
-                checkstepM.CheckMiss(1.15f);
             }
-            }
-            else if (halveBeat == true)
-            {
+        }
+        else if (halveBeat == true)
+        {
             //halve the multiplier for a "beat", reduce the last beat by half a beat, so it goes into the backbeat
-            pastbeat += (beatdur * beatmultiplier);
             switchingStep = true;
-            beatmultiplier = 0.5f;
-            pastbeat -= (beatdur * beatmultiplier);
+            pastbeat += (beatdur - (beatdur / 2));
+            beatmultiplier = 0.5f;            
         }
     }
 
-        public void togglePrepare(float multiplier, bool active, bool doNotMove)
+    public void togglePrepare(float multiplier, bool active, bool doNotMove)
+    {
+        if (active == true)
         {
-            if (active == true)
+            beatmultiplier = multiplier;
+            isPreparing = true;
+            if (doNotMove)
             {
-                beatmultiplier = multiplier;
-                isPreparing = true;
-                if (doNotMove)
-                {
-                    stayStill = true;
-                }
-                else
-                {
-                    stayStill = false;
-                }
+                stayStill = true;
             }
-            else if (active == false)
+            else
             {
-                beatmultiplier = 1;
                 stayStill = false;
-                isPreparing = false;
             }
         }
-        public void playSound(string soundFile)
+        else if (active == false)
         {
-            AudioClip soundtoplay;
-            soundtoplay = Resources.Load<AudioClip>("Sounds/SFX/" + soundFile);
-            GameObject.FindGameObjectWithTag("Player").GetComponent<AudioSource>().PlayOneShot(soundtoplay);
+            beatmultiplier = 1;
+            stayStill = false;
+            isPreparing = false;
         }
+    }
+    public void playSound(string soundFile)
+    {
+        AudioClip soundtoplay;
+        soundtoplay = Resources.Load<AudioClip>("Sounds/SFX/" + soundFile);
+        GameObject.FindGameObjectWithTag("Player").GetComponent<AudioSource>().PlayOneShot(soundtoplay);
+    }
     #endregion
 
     IEnumerator addSampleBeatmap(byte sample = 0)
@@ -282,14 +293,14 @@ public class Timeline : MonoBehaviour
         if (sample == 0)
         {
             //sample beatmap
-            addAction(5, 0.5f, "1");
+            addAction(5, 1f, "1");
             addAction(1, 4, "1");
             addAction(1, 6, "1");
-            addAction(2, 8f);
+            addAction(2, 7.5f);
             addAction(8, 13f, "cowbell");
             addAction(8, 14f, "cowbell");
             addAction(8, 15f, "cowbell");
-            addAction(2, 14.5f);
+            addAction(2, 15.5f);
             addAction(8, 21, "cowbell");
             addAction(8, 22, "cowbell");
             addAction(8, 23, "cowbell");
@@ -302,32 +313,22 @@ public class Timeline : MonoBehaviour
         }
         else if (sample == 1)
         {
-            addAction(0, 1, "1");
-            addAction(4, 0, "1");
-            addAction(0, 12, "3");
-            addAction(0, 24, "1");
-            addAction(2, 35);
-            addAction(2, 36);
-            addAction(1, 29);
-            addAction(2, 54);
-            addAction(2, 68);
-            addAction(2, 77);
-            addAction(2, 78);
+            addAction(12, 113f, "ahaha");
         }
     }
 
 }
 
-    struct actionElement
-    {
-        public float position;
-        public byte action;
-        public string arg1;
+struct actionElement
+{
+    public float position;
+    public byte action;
+    public string arg1;
 
-        public actionElement(byte act, float pos, string a1 = "")
-        {
-            position = pos;
-            action = act;
-            arg1 = a1;
-        }
+    public actionElement(byte act, float pos, string a1 = "")
+    {
+        position = pos;
+        action = act;
+        arg1 = a1;
     }
+}

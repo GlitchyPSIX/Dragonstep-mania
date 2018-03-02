@@ -15,12 +15,13 @@ public class Conductor : MonoBehaviour
     double dspOffset = 0d;
     public AudioSource song;
     public AudioListener gameSpeaker;
-
+    Timeline timeline;
     public bool trainingMode;
 
     // Use this for initialization
     void Start()
     {
+        timeline = GetComponent<Timeline>();
         song = GetComponent<AudioSource>();
         resetStartOfSong(false);
     }
@@ -28,7 +29,7 @@ public class Conductor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        songposition = ((double)(AudioSettings.dspTime) - dspOffset) * song.pitch - offset;
+        songposition = ((AudioSettings.dspTime) - dspOffset) * song.pitch - offset;
     }
 
     public void resetStartOfSong(bool pauseAtStart){
@@ -36,6 +37,13 @@ public class Conductor : MonoBehaviour
         if (pauseAtStart) { 
             AudioListener.pause = true;
         }
+    }
+
+    public IEnumerator resetBeatmap()
+    {
+        timeline.beatcount = 1;
+        song.Play();
+        yield return null;
     }
 
 }

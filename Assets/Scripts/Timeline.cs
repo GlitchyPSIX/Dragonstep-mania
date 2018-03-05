@@ -12,10 +12,10 @@ public class Timeline : MonoBehaviour
     Ticko updater;
 
     public double pastbeat;
-    public float offset = 0;
-    public float beatcount = -1f;
-    public float beatmultiplier;
-    public float beatdur;
+    public double offset = 0;
+    public double beatcount = -1f;
+    public double beatmultiplier;
+    public double beatdur;
     public bool StepOnOffbeats = false;
     GameObject[] BackgroundSwitchers;
     Conductor conductor;
@@ -53,11 +53,6 @@ public class Timeline : MonoBehaviour
         // every beat (With the multiplier in action, probably gonna use this for swing beats)
         if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
         {
-            // AUTO / PREPARE
-            if (autoMode == true || isPreparing == true)
-            {
-                StartCoroutine(checkstepM.performStep());
-            }
             /* CPU LOGIC START
             */
             if (StepOnOffbeats == true && stayStill == false)
@@ -88,7 +83,11 @@ public class Timeline : MonoBehaviour
                         switcher.GetComponent<Step>().OnBeatStep();
                     }
                 }
-
+                // AUTO / PREPARE
+                if (autoMode == true || isPreparing == true)
+                {
+                    StartCoroutine(checkstepM.performStep());
+                }
             }
             
             switchStep(false);
@@ -244,7 +243,7 @@ public class Timeline : MonoBehaviour
             }
             else //if it's already off-transition
             {
-                StartCoroutine(checkstepM.CheckMiss(0.30f));
+                StartCoroutine(checkstepM.CheckMiss(0.8f));
                 pastbeat += (beatdur * beatmultiplier);
             }
         }

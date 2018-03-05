@@ -10,8 +10,8 @@ This file checks for misses and if you've stepped correctly or incorrectly.
 */
 public class CheckStep : MonoBehaviour
 {
-    public float beatMultiplier;
-    public float beatdur;
+    public double beatMultiplier;
+    public double beatdur;
     public double pastHitPos;
     public Text OSText;
     public bool isHurt = false;
@@ -52,7 +52,6 @@ public class CheckStep : MonoBehaviour
                     ) && timeline.autoMode == false
                 )
             {
-                caughtPosition = (GetComponent<Conductor>().songposition - timeline.pastbeat);
                 StartCoroutine(performStep());
             }
             else
@@ -65,18 +64,21 @@ public class CheckStep : MonoBehaviour
         OSText.text = "Beat count:" + timeline.beatcount.ToString() +
         "\n" + "Song offset: " + (GetComponent<Conductor>().songposition + timeline.offset).ToString() +
         "\nLast Hit: " + pastHitPos.ToString() + "\n"
+        + "Caught position: "  + caughtPosition.ToString() + "\n"
         + "Last beat: " + (timeline.pastbeat).ToString()
         + "\n Is hurt?: " + GetComponent<CheckStep>().isHurt.ToString() +
         "\n Hurt Orientation: " + GetComponent<CheckStep>().hurtOrientation.ToString()
         + "\n Misses: " + GetComponent<CheckStep>().missCounter.ToString()
         + "\n Sucessful hits: " + GetComponent<CheckStep>().hitCounter.ToString()
         + "\n Snap: " + timeline.snap.ToString()
-        + "\n Difference:" + (GetComponent<Conductor>().songposition - timeline.pastbeat).ToString();
+        + "\n Difference:" + (timeline.pastbeat - caughtPosition).ToString();
 
     }
 
     public IEnumerator performStep()
     {
+        caughtPosition = Mathf.Abs((float)(GetComponent<Conductor>().songposition - (timeline.pastbeat + beatdur)));
+        
         //add a successful hit
         hitCounter++;
         /*
@@ -89,7 +91,7 @@ public class CheckStep : MonoBehaviour
           Not working as expected.
           Classic...
         */
-        pastHitPos += (beatdur - (beatdur - (beatdur * 0.75f)));
+        pastHitPos += (beatdur - (caughtPosition));
             isHurt = false;
         if ((timeline.isPreparing) && (!(timeline.StepOnOffbeats)) && timeline.stayStill == false) //If onbeat(default) AND is preparing
         {
@@ -110,7 +112,7 @@ public class CheckStep : MonoBehaviour
         yield return null;
     }
 
-    public IEnumerator CheckMiss(float treshold = 1.15f)
+    public IEnumerator CheckMiss(float treshold = 1.25f)
     {
         if (GetComponent<Timeline>().autoMode == false)
         {
@@ -121,6 +123,7 @@ public class CheckStep : MonoBehaviour
                 {
                     //add miss and perform correct animation
                     isHurt = true;
+                    pastHitPos += (beatdur - (beatdur - (beatdur * treshold)));
                     missCounter++;
                     if (!timeline.switchingStep)
                     {
@@ -138,14 +141,15 @@ public class CheckStep : MonoBehaviour
                             }
                         }
                     }
-                    pastHitPos += (beatdur - ((beatdur * treshold) - beatdur));
+                    
                 }
             }
             else if (isHurt)
             {
                 //if hurt, and the songposition already progressed a beat * multiplier
-                if (GetComponent<Conductor>().songposition > (pastHitPos + beatdur))
+                if (GetComponent<Conductor>().songposition > (timeline.pastbeat + beatdur))
                 {
+                    pastHitPos += beatdur;
                     //add miss
                     missCounter++;
                     //this block below will make the orientation switch in case the step is switched
@@ -165,7 +169,7 @@ public class CheckStep : MonoBehaviour
                         }
                     }
                     //increment the past hit by a beat (AUTO)
-                    pastHitPos += beatdur;
+                    
                 }
             }
             else if (GetComponent<Timeline>().autoMode == true)

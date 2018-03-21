@@ -321,7 +321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53b61190b76e02040a537b6899fe0720, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bpm: 130
+  bpm: 150
   offset: 0
   songposition: 0
   song: {fileID: 0}
@@ -336,7 +336,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: a9eb795a5282d6a42abb812a500e9c3b, type: 3}
+  m_audioClip: {fileID: 8300000, guid: bf10137a469634e45895f71682e6b264, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.9
   m_Pitch: 1
@@ -431,12 +431,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c980290ccf5a7cc46b14eca180f260b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pastbeat: 0
-  offset: 0
-  beatcount: 0
-  beatmultiplier: 0
-  beatdur: 0
-  StepOnOffbeats: 0
 --- !u!114 &822360789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -466,6 +460,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d44dda77f3b7a246a7da01c8ea9dbbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pastbeat: 0
+  offset: 0
+  beatcount: -1
+  beatmultiplier: 0
+  beatdur: 0
+  StepOnOffbeats: 0
   isPreparing: 0
   stayStill: 0
   autoMode: 1

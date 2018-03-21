@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,7 +33,7 @@ public class CheckStep : MonoBehaviour
         timeline = GetComponent<Timeline>();
         beatdur = timeline.beatdur * timeline.beatmultiplier;
         beatMultiplier = timeline.beatmultiplier;
-        
+
     }
 
     // Update is called once per frame
@@ -52,7 +53,7 @@ public class CheckStep : MonoBehaviour
                     ) && timeline.autoMode == false
                 )
             {
-                StartCoroutine(performStep());
+                performStep();
             }
             else
             {
@@ -64,7 +65,7 @@ public class CheckStep : MonoBehaviour
         OSText.text = "Beat count:" + timeline.beatcount.ToString() +
         "\n" + "Song offset: " + (GetComponent<Conductor>().songposition + timeline.offset).ToString() +
         "\nLast Hit: " + pastHitPos.ToString() + "\n"
-        + "Caught position: "  + caughtPosition.ToString() + "\n"
+        + "Caught position: " + caughtPosition.ToString() + "\n"
         + "Last beat: " + (timeline.pastbeat).ToString()
         + "\n Is hurt?: " + GetComponent<CheckStep>().isHurt.ToString() +
         "\n Hurt Orientation: " + GetComponent<CheckStep>().hurtOrientation.ToString()
@@ -75,24 +76,28 @@ public class CheckStep : MonoBehaviour
 
     }
 
-    public IEnumerator performStep()
+    public void performStep()
     {
-        caughtPosition = Mathf.Abs((float)(GetComponent<Conductor>().songposition - (timeline.pastbeat + beatdur)));
+        caughtPosition = Math.Abs((GetComponent<Conductor>().songposition - (timeline.pastbeat + beatdur)));
+        if (timeline.autoMode == true)
+        {
+            pastHitPos += (beatdur);
+        }
+        else if (GetComponent<Conductor>().songposition > (timeline.pastbeat + (0.75f * beatdur)))
+        {
+            pastHitPos += (beatdur + (caughtPosition));
+        }
+        else if (GetComponent<Conductor>().songposition < (timeline.pastbeat + (0.25f * beatdur)))
+        {
+            pastHitPos += (beatdur - (caughtPosition));
+        }
         
         //add a successful hit
         hitCounter++;
         /*
-          Case that I took way too long to figure out:
-          I was solely taking in consideration if you stepped *after*, which lead to the question of
-          what the h3ck would happen if you stepped before. So I worked on the treshold by making a difference
-          and removing it from the beat duration so the spacing is even, unlike a case where it extended way past where it should have, 
-          and computed the miss 2 beats later, and for the earlier step, just add the whole beat with no difference so it doesn't step before.
-          I still have to finish the rest.. ?¿?
-          Not working as expected.
-          Classic...
+          Working on this stuff once agian, I think I've found one of the core issues.
         */
-        pastHitPos += (beatdur - (caughtPosition));
-            isHurt = false;
+        isHurt = false;
         if ((timeline.isPreparing) && (!(timeline.StepOnOffbeats)) && timeline.stayStill == false) //If onbeat(default) AND is preparing
         {
             GameObject.FindWithTag("Player").GetComponent<Step>().PrepareStep();
@@ -109,10 +114,9 @@ public class CheckStep : MonoBehaviour
         {
             // Do not play any animation.
         }
-        yield return null;
     }
 
-    public IEnumerator CheckMiss(float treshold = 1.25f)
+    public void CheckMiss(float treshold = 1.25f)
     {
         if (GetComponent<Timeline>().autoMode == false)
         {
@@ -123,7 +127,7 @@ public class CheckStep : MonoBehaviour
                 {
                     //add miss and perform correct animation
                     isHurt = true;
-                    pastHitPos += (beatdur - (beatdur - (beatdur * treshold)));
+                    pastHitPos += (beatdur - (beatdur * treshold) );
                     missCounter++;
                     if (!timeline.switchingStep)
                     {
@@ -141,15 +145,15 @@ public class CheckStep : MonoBehaviour
                             }
                         }
                     }
-                    
+
                 }
             }
             else if (isHurt)
             {
                 //if hurt, and the songposition already progressed a beat * multiplier
-                if (GetComponent<Conductor>().songposition > (timeline.pastbeat + beatdur))
+                if (GetComponent<Conductor>().songposition > (timeline.pastbeat))
                 {
-                    pastHitPos += beatdur;
+                    pastHitPos += (beatdur + Math.Abs((GetComponent<Conductor>().songposition - (timeline.pastbeat + beatdur))));
                     //add miss
                     missCounter++;
                     //this block below will make the orientation switch in case the step is switched
@@ -169,7 +173,7 @@ public class CheckStep : MonoBehaviour
                         }
                     }
                     //increment the past hit by a beat (AUTO)
-                    
+
                 }
             }
             else if (GetComponent<Timeline>().autoMode == true)
@@ -177,6 +181,5 @@ public class CheckStep : MonoBehaviour
                 //AUTO is enabled, no miss check should take in place.
             }
         }
-        yield return null;
     }
 }

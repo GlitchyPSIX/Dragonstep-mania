@@ -40,7 +40,7 @@ public class Timeline : MonoBehaviour
         //for every background stepswitcher
         BackgroundSwitchers = GameObject.FindGameObjectsWithTag("Background");
         checkstepM = GetComponent<CheckStep>();
-        StartCoroutine(addSampleBeatmap(1));
+        StartCoroutine(addSampleBeatmap(3));
 
         conductor = GetComponent<Conductor>();
         checkstepM = GetComponent<CheckStep>();
@@ -49,7 +49,7 @@ public class Timeline : MonoBehaviour
 
     void Update()
     {
-        StartCoroutine(updateTimelinePosition());
+        updateTimelinePosition();
         // every beat (With the multiplier in action, probably gonna use this for swing beats)
         if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
         {
@@ -86,13 +86,12 @@ public class Timeline : MonoBehaviour
                 // AUTO / PREPARE
                 if (autoMode == true || isPreparing == true)
                 {
-                    StartCoroutine(checkstepM.performStep());
+                    checkstepM.performStep();
                 }
             }
-            
             switchStep(false);
             // ^ makes sure the beat is 1x when required (used to switch to offbeat)
-
+            checkstepM.CheckMiss(0.80f);
         }
         if (Input.GetKeyDown("a"))
         {
@@ -123,34 +122,32 @@ public class Timeline : MonoBehaviour
 
     }
 
-    public IEnumerator updateTimelinePosition()
+    public void updateTimelinePosition()
     {
         if (GetComponent<Conductor>().songposition + offset > pastRevolution + (beatdur * snap))
         {
-            StartCoroutine(checkTimeline());
+            checkTimeline();
             beatcount += snap;
             pastRevolution += (beatdur * snap);
         }
-        yield return null;
     }
 
-    public IEnumerator checkTimeline()
+    public void checkTimeline()
     {
         foreach (actionElement item in actionList)
         {
-            if (item.position == (beatcount))
+            if (item.position == (beatcount + 1))
             {
                 StartCoroutine(performAction(item.action, item.arg1));
             }
         }
         foreach (actionElement item in surfaceActionList)
         {
-            if (item.position == (beatcount))
+            if (item.position == (beatcount + 1))
             {
                 StartCoroutine(performAction(item.action, item.arg1));
             }
         }
-        yield return null;
     }
 
 
@@ -243,7 +240,6 @@ public class Timeline : MonoBehaviour
             }
             else //if it's already off-transition
             {
-                StartCoroutine(checkstepM.CheckMiss(0.8f));
                 pastbeat += (beatdur * beatmultiplier);
             }
         }
@@ -252,7 +248,7 @@ public class Timeline : MonoBehaviour
             //halve the multiplier for a "beat", reduce the last beat by half a beat, so it goes into the backbeat
             switchingStep = true;
             pastbeat += (beatdur - (beatdur / 2));
-            beatmultiplier = 0.5f;            
+            beatmultiplier = 0.5f;
         }
     }
 
@@ -286,33 +282,46 @@ public class Timeline : MonoBehaviour
     }
     #endregion
 
-    IEnumerator addSampleBeatmap(byte sample = 0)
+    IEnumerator addSampleBeatmap(byte sample = 1)
     {
         yield return new WaitForEndOfFrame();
-        if (sample == 0)
+        switch (sample)
         {
-            //sample beatmap
-            addAction(5, 1f, "1");
-            addAction(1, 4, "1");
-            addAction(1, 6, "1");
-            addAction(2, 7.5f);
-            addAction(8, 13f, "cowbell");
-            addAction(8, 14f, "cowbell");
-            addAction(8, 15f, "cowbell");
-            addAction(2, 15.5f);
-            addAction(8, 21, "cowbell");
-            addAction(8, 22, "cowbell");
-            addAction(8, 23, "cowbell");
-            addAction(2, 22.5f);
-            addAction(8, 29.5f, "cowbell");
-            addAction(8, 30.5f, "cowbell");
-            addAction(8, 31.5f, "cowbell");
-            addAction(2, 30.5f);
-            addAction(8, 31.5f, "cowbell");
-        }
-        else if (sample == 1)
-        {
-            addAction(12, 113f, "ahaha");
+            case 1:
+                {
+                    //sample beatmap
+                    addAction(5, 1f, "1");
+                    addAction(1, 4, "1");
+                    addAction(1, 6, "1");
+                    addAction(2, 7.5f);
+                    addAction(8, 13f, "cowbell");
+                    addAction(8, 14f, "cowbell");
+                    addAction(8, 15f, "cowbell");
+                    addAction(2, 15.5f);
+                    addAction(8, 21, "cowbell");
+                    addAction(8, 22, "cowbell");
+                    addAction(8, 23, "cowbell");
+                    addAction(2, 22.5f);
+                    addAction(8, 29.5f, "cowbell");
+                    addAction(8, 30.5f, "cowbell");
+                    addAction(8, 31.5f, "cowbell");
+                    addAction(2, 30.5f);
+                    addAction(8, 31.5f, "cowbell");
+                    break;
+                }
+            case 2:
+                {
+                    addAction(12, 113f, "ahaha");
+                    break;
+                }
+            case 3:
+                {
+                    addAction(4, 0f, "1");
+                    addAction(5, 4f, "2");
+                    addAction(5, 12f, "1");
+                    addAction(1, 15f, "1");
+                    break;
+                }
         }
     }
 

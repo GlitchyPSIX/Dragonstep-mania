@@ -55,7 +55,15 @@ public class CheckStep : MonoBehaviour
             {
                 performStep();
             }
-            else
+            else if (
+                     (
+                         ((GetComponent<Conductor>().songposition < (timeline.pastbeat + (0.75f * beatdur))
+                         )
+                             ||
+                         (GetComponent<Conductor>().songposition > (timeline.pastbeat + (0.25f * beatdur))
+                         ))
+                     ) && timeline.autoMode == false
+                 )
             {
                 //if outside margin (Mis-press)
                 missCounter++;

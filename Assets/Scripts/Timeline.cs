@@ -53,6 +53,7 @@ public class Timeline : MonoBehaviour
         // every beat (With the multiplier in action, probably gonna use this for swing beats)
         if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
         {
+            checkstepM.isItLate = true;
             /* CPU LOGIC START
             */
             if (StepOnOffbeats == true && stayStill == false)
@@ -91,8 +92,8 @@ public class Timeline : MonoBehaviour
             }
             switchStep(false);
             // ^ makes sure the beat is 1x when required (used to switch to offbeat)
-            checkstepM.CheckMiss(0.80f);
         }
+        checkstepM.CheckMiss(0.30d);
         if (Input.GetKeyDown("a"))
         {
             //pause and unpause

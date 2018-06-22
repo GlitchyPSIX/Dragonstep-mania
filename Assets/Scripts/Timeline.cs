@@ -26,6 +26,9 @@ public class Timeline : MonoBehaviour
     double pastRevolution;
     public float snap;
     public bool switchingStep;
+    public enum timeStates : byte { Early, Neutral, Late, EarlyNeutral };
+    public byte timeState;
+    public bool alreadyStepped;
 
     // Use this for initialization
     void Start()
@@ -50,10 +53,29 @@ public class Timeline : MonoBehaviour
     void Update()
     {
         updateTimelinePosition();
+        /* TODO START -------------------
+         * 
+         *  TODO: Remake the detection of early/miss entirely
+         *  CURRENT HYPOTET. SOLUTION: Adding a STATIC reference to the next beat's "early" and "late" margins in 
+         *  SONG time (Conductor.songposition). Check every frame if the current position is in each of the margins,
+         *  and add a duration of one beat relative to the margin's starting times IF:
+         *  1. player hits successfully and the respective hit is logged (Early/Late)
+         *  2. player misses entirely (Late)
+         * 
+         *  This should be the solution to my constant dilemma and I'm writing it here since I'm sure I
+         *  probably won't be able to work on it soon, but I don't want to forget since it's perhaps the
+         *  most genius solution I've ever had since I learnt how to get a quadratic function's grap-
+         *  ok, honestly that isn't much of an achievement but whatever works to fill this one commit
+         *  
+         *  by the way, reader, hi
+         *  
+         *  TODO END -------------------
+         */
+
         // every beat (With the multiplier in action, probably gonna use this for swing beats)
+
         if (GetComponent<Conductor>().songposition + offset > pastbeat + (beatdur * beatmultiplier))
         {
-            checkstepM.isItLate = true;
             /* CPU LOGIC START
             */
             if (StepOnOffbeats == true && stayStill == false)
@@ -93,7 +115,6 @@ public class Timeline : MonoBehaviour
             switchStep(false);
             // ^ makes sure the beat is 1x when required (used to switch to offbeat)
         }
-        checkstepM.CheckMiss(0.30d);
         if (Input.GetKeyDown("a"))
         {
             //pause and unpause
@@ -131,6 +152,7 @@ public class Timeline : MonoBehaviour
             beatcount += snap;
             pastRevolution += (beatdur * snap);
         }
+
     }
 
     public void checkTimeline()

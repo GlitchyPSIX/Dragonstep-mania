@@ -26,14 +26,13 @@ public class CheckStep : MonoBehaviour
     int hitCounter = 0;
     int missCounter = 0;
     Timeline timeline;
-    public bool isItLate = false;
 
     // Use this for initialization
     void Start()
     {
         timeline = GetComponent<Timeline>();
-        beatdur = timeline.beatdur * timeline.beatmultiplier;
         beatMultiplier = timeline.beatmultiplier;
+        beatdur = timeline.beatdur * timeline.beatmultiplier;
 
     }
 
@@ -43,17 +42,18 @@ public class CheckStep : MonoBehaviour
         beatdur = timeline.beatdur * timeline.beatmultiplier;
         if (Input.GetButtonDown("Step"))
         {
-            //if inside the margin
             if (
-                    (
-                        ((GetComponent<Conductor>().songposition > (timeline.pastbeat + (0.75d * beatdur))
-                        )
-                            ||
-                        (GetComponent<Conductor>().songposition < (timeline.pastbeat + (0.30d * beatdur))
-                        ))
-                    ) && timeline.autoMode == false
+            (
+                ((GetComponent<Conductor>().songposition > (timeline.pastbeat + (0.75d * beatdur))
                 )
+                    ||
+                (GetComponent<Conductor>().songposition < (timeline.pastbeat + (0.25d * beatdur))
+                ))
+            ) && timeline.autoMode == false
+        )
             {
+                //if inside the margin
+
                 performStep();
             }
             else if (
@@ -61,7 +61,7 @@ public class CheckStep : MonoBehaviour
                          ((GetComponent<Conductor>().songposition < (timeline.pastbeat + (0.75d * beatdur))
                          )
                              ||
-                         (GetComponent<Conductor>().songposition > (timeline.pastbeat + (0.30d * beatdur))
+                         (GetComponent<Conductor>().songposition > (timeline.pastbeat + (0.25d * beatdur))
                          ))
                      ) && timeline.autoMode == false
                  )
@@ -88,36 +88,42 @@ public class CheckStep : MonoBehaviour
 
     public void performStep()
     {
-        caughtPosition = (GetComponent<Conductor>().songposition - (timeline.pastbeat + beatdur*0.75d));
+        caughtPosition = (GetComponent<Conductor>().songposition - (timeline.pastbeat + beatdur * 0.75d));
         if (timeline.autoMode == true || timeline.isPreparing == true)
         {
-            pastHitPos += (beatdur);
-            isItLate = false;
+            animateStep();
+            isHurt = false;
+            //add a successful hit
+            hitCounter++;
         }
-        else if ((GetComponent<Conductor>().songposition > (timeline.pastbeat + (0.75d * beatdur))) && (GetComponent<Conductor>().songposition < (timeline.pastbeat + beatdur)))
+        else if (timeline.timeState == (byte)Timeline.timeStates.Early)
         {
-            Debug.Log("Early hit.");
-            isItLate = false;
-            pastHitPos += (beatdur + (caughtPosition));
+            animateStep();
+            isHurt = false;
+            //add a successful hit
+            hitCounter++;
         }
-        else if ((GetComponent<Conductor>().songposition < (timeline.pastbeat + (0.30d * beatdur))) && isItLate)
+        else if (timeline.timeState == (byte)Timeline.timeStates.Late)
         {
+            animateStep();
             Debug.Log("Late hit.");
-            isItLate = false;
-            pastHitPos += (beatdur + (GetComponent<Conductor>().songposition - (timeline.pastbeat)));
+            isHurt = false;
+            //add a successful hit
+            hitCounter++;
         }
         else if ((GetComponent<Conductor>().songposition == (timeline.pastbeat + beatdur)))
         {
             Debug.Log("PERFECT (Are you even human?) hit.");
-            pastHitPos += (beatdur + (caughtPosition));
+            animateStep();
         }
 
-        //add a successful hit
-        hitCounter++;
         /*
           Working on this stuff once agian, I think I've found one of the core issues.
         */
-        isHurt = false;
+    }
+
+    void animateStep()
+    {
         if ((timeline.isPreparing) && (!(timeline.StepOnOffbeats)) && timeline.stayStill == false) //If onbeat(default) AND is preparing
         {
             GameObject.FindWithTag("Player").GetComponent<Step>().PrepareStep();
@@ -143,12 +149,12 @@ public class CheckStep : MonoBehaviour
             if (!isHurt)
             {
                 //if NOT hurt, wait a little bit after the last beat (chance window)
-                if (isItLate & (GetComponent<Conductor>().songposition > (timeline.pastbeat + (treshold * beatdur))))
+                if ((GetComponent<Conductor>().songposition > (timeline.pastbeat + (treshold * beatdur))) && timeline.timeState == (byte)Timeline.timeStates.Late)
                 {
                     Debug.Log("MISSED");
+                    timeline.timeState = (byte)Timeline.timeStates.Neutral;
                     //add miss and perform correct animation
                     isHurt = true;
-                    pastHitPos += (beatdur - (beatdur*treshold));
                     missCounter++;
                     if (!timeline.switchingStep)
                     {
@@ -174,7 +180,6 @@ public class CheckStep : MonoBehaviour
                 //if hurt, and the songposition already progressed a beat * multiplier
                 if (GetComponent<Conductor>().songposition > (timeline.pastbeat))
                 {
-                    pastHitPos += (beatdur);
                     //add miss
                     missCounter++;
                     //this block below will make the orientation switch in case the step is switched

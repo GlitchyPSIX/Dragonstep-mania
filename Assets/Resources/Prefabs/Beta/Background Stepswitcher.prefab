@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 212328086295153430}
   - component: {fileID: 95689123123830194}
   - component: {fileID: 114711099657526984}
+  - component: {fileID: 114111522121416856}
   m_Layer: 0
   m_Name: Background Stepswitcher
   m_TagString: Background
@@ -59,6 +60,20 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114111522121416856
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1527852897842236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e99fa68358fb29641aed5668d26a00c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CastShadows: 1
+  ReceiveShadows: 1
+  srenderer: {fileID: 212328086295153430}
 --- !u!114 &114711099657526984
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -80,6 +95,7 @@ MonoBehaviour:
   hah: {fileID: 0}
   boh: {fileID: 0}
   cowbell: {fileID: 0}
+  miss: {fileID: 0}
 --- !u!212 &212328086295153430
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -93,7 +109,7 @@ SpriteRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 687c2dd8e8e1263408daed1f870527e1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -110,8 +126,14 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 4a63e974bf7b810448da5b3818a9de97, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1

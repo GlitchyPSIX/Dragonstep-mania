@@ -7,7 +7,7 @@ public class EnableSpriteShadows : MonoBehaviour {
 
 public bool CastShadows;
 public bool ReceiveShadows;
-public SpriteRenderer srenderer;
+SpriteRenderer srenderer;
 
 	// Use this for initialization
 	void Start () {

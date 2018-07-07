@@ -426,28 +426,32 @@ namespace DSMUI
 
     namespace Actions
     {
-        public class TransitionActions {
+        public class TransitionActions : MonoBehaviour {
 
-            GameObject TransitionController;
-            static MonoBehaviour monob = new MonoBehaviour();
+            public GameObject TransitionController;
 
-            public TransitionActions()
-            {
-                TransitionController = GameObject.FindGameObjectWithTag("UITransitionMask");
-            }
+            //public TransitionActions(GameObject TRC)
+            //{
+            //    TransitionController = TRC;
+            //}
 
             public void StartSceneTransition(string scenepath, Sprite mask)
             {
-                monob.StartCoroutine(GotoScene(scenepath, mask));
+                StartCoroutine(GotoScene(scenepath, mask));
             }
 
-            private IEnumerator GotoScene(string scenetgt, Sprite face)
+            public void TransitionFace(Sprite face, bool ComingIn)
+            {
+                TransitionController.GetComponent<TransitionControl>().PlayTransition(face, true);
+            }
+
+            public IEnumerator GotoScene(string scenetgt, Sprite face)
             {
                 AsyncOperation IsSceneLoaded = SceneManager.LoadSceneAsync(scenetgt);
                 Debug.Log("yeehaw");
-                TransitionController.GetComponent<TransitionControl>().PlayTransition(face, false);
                 IsSceneLoaded.allowSceneActivation = false;
-                yield return new WaitUntil(() => TransitionController.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("finalizeTransition") == true);
+                TransitionController.GetComponent<TransitionControl>().PlayTransition(face, false);
+                yield return new WaitForSeconds(TransitionController.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length /* + TransitionController.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime */);
                 yield return new WaitUntil(() => IsSceneLoaded.progress == 0.9f);
                 Debug.Log("I'm alive");
                 TransitionController.GetComponent<TransitionControl>().PlayTransition(face, true);

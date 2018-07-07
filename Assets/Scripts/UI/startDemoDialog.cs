@@ -10,12 +10,15 @@ public class startDemoDialog : MonoBehaviour
     Dialog dialogObj;
     Transform containerTransform;
     List<MenuItem> mlm;
-    TransitionActions tra = new TransitionActions();
+    TransitionActions tra;
 
     // Use this for initialization
     void Start()
     {
         containerTransform = GameObject.FindGameObjectWithTag("UIMenuContainer").transform;
+        //tra = new TransitionActions();
+        tra = GameObject.FindGameObjectWithTag("UITransitionMask").AddComponent<TransitionActions>();
+        tra.TransitionController = GameObject.FindGameObjectWithTag("UITransitionMask");
         mlm = new List<MenuItem>()
         {
             new MenuItem()
@@ -88,7 +91,8 @@ public class startDemoDialog : MonoBehaviour
         //                                    null,
         //                                    null,
         //                                     SoundEffects.Confirm, SoundEffects.DialogDefault, "", "OK", "");
-        dialogObj = new Dialog("Demo", "Remember this is a demo. Any error or missing thing should be reported to me in the respective channel.", "Gotcha", () => { dialogObj.DestroyDialog(); mainMenu(); }, SoundEffects.Select, InterfaceIcons.Info, SoundEffects.DialogDefault);
+        
+        dialogObj = new Dialog("Demo", "Remember this is a demo. Any error or missing thing should be reported to me in the respective channel.", "Gotcha", () => { dialogObj.DestroyDialog(); mainMenu(); tra.TransitionFace(Transitions.Normal, true); }, SoundEffects.Select, InterfaceIcons.Info, SoundEffects.DialogDefault);
         dialogObj.ShowDialog();
     }
 }

@@ -53,7 +53,6 @@ public class CheckStep : MonoBehaviour
         )
             {
                 //if inside the margin
-
                 performStep();
             }
             else if (
@@ -88,33 +87,21 @@ public class CheckStep : MonoBehaviour
 
     public void performStep()
     {
-        caughtPosition = (GetComponent<Conductor>().songposition - (timeline.pastbeat + beatdur * 0.75d));
         if (timeline.autoMode == true || timeline.isPreparing == true)
         {
             animateStep();
             isHurt = false;
             //add a successful hit
             hitCounter++;
+            timeline.updateNextBeat("AUTO Hit");
         }
-        else if (timeline.timeState == (byte)Timeline.timeStates.Early)
+        else
         {
             animateStep();
             isHurt = false;
             //add a successful hit
             hitCounter++;
-        }
-        else if (timeline.timeState == (byte)Timeline.timeStates.Late)
-        {
-            animateStep();
-            Debug.Log("Late hit.");
-            isHurt = false;
-            //add a successful hit
-            hitCounter++;
-        }
-        else if ((GetComponent<Conductor>().songposition == (timeline.pastbeat + beatdur)))
-        {
-            Debug.Log("PERFECT (Are you even human?) hit.");
-            animateStep();
+            timeline.updateNextBeat("Hit");
         }
 
         /*
@@ -142,17 +129,17 @@ public class CheckStep : MonoBehaviour
         }
     }
 
-    public void CheckMiss(double treshold = 0.30d)
+    public void CheckMiss()
     {
         if (timeline.autoMode == false && timeline.isPreparing == false)
         {
             if (!isHurt)
             {
                 //if NOT hurt, wait a little bit after the last beat (chance window)
-                if ((GetComponent<Conductor>().songposition > (timeline.pastbeat + (treshold * beatdur))) && timeline.timeState == (byte)Timeline.timeStates.Late)
+                 if ((GetComponent<Conductor>().songposition > (timeline.lateLimit)))
                 {
                     Debug.Log("MISSED");
-                    timeline.timeState = (byte)Timeline.timeStates.Neutral;
+                    timeline.updateNextBeat("Miss");
                     //add miss and perform correct animation
                     isHurt = true;
                     missCounter++;
@@ -178,10 +165,11 @@ public class CheckStep : MonoBehaviour
             else if (isHurt)
             {
                 //if hurt, and the songposition already progressed a beat * multiplier
-                if (GetComponent<Conductor>().songposition > (timeline.pastbeat))
+                if (GetComponent<Conductor>().songposition > (timeline.lateLimit))
                 {
                     //add miss
                     missCounter++;
+                    timeline.updateNextBeat("Miss");
                     //this block below will make the orientation switch in case the step is switched
                     if (!timeline.switchingStep)
                     {
@@ -201,7 +189,7 @@ public class CheckStep : MonoBehaviour
                     //increment the past hit by a beat (AUTO)
 
                 }
-            }
+            } 
             else if (GetComponent<Timeline>().autoMode == true || GetComponent<Timeline>().isPreparing == true)
             {
                 //AUTO is enabled, no miss check should take in place.

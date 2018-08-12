@@ -26,10 +26,11 @@ public class Timeline : MonoBehaviour
     double pastRevolution;
     public float snap;
     public bool switchingStep;
-    public enum timeStates : byte { Early, Neutral, Late, EarlyNeutral };
-    public byte timeState;
-    public bool alreadyStepped;
 
+
+    public double nextbeat;
+    public double earlyLimit;
+    public double lateLimit;
     // Use this for initialization
     void Start()
     {
@@ -48,26 +49,22 @@ public class Timeline : MonoBehaviour
         conductor = GetComponent<Conductor>();
         checkstepM = GetComponent<CheckStep>();
         snap = 0.125f;
+        nextbeat += beatdur * beatmultiplier;
     }
 
     void Update()
     {
+        //Make sure the limits are within the beat margins, so to avoid halfbeat discrepancy thinking the switch has no miss
+        earlyLimit = nextbeat - (beatdur * beatmultiplier * 0.25d);
+        lateLimit = nextbeat + (beatdur * beatmultiplier * 0.25d);
+
+        //Check for miss every frame (value) and update the Timeline's position
         updateTimelinePosition();
+        checkstepM.CheckMiss();
         /* TODO START -------------------
          * 
-         *  TODO: Remake the detection of early/miss entirely
-         *  CURRENT HYPOTET. SOLUTION: Adding a STATIC reference to the next beat's "early" and "late" margins in 
-         *  SONG time (Conductor.songposition). Check every frame if the current position is in each of the margins,
-         *  and add a duration of one beat relative to the margin's starting times IF:
-         *  1. player hits successfully and the respective hit is logged (Early/Late)
-         *  2. player misses entirely (Late)
-         * 
-         *  This should be the solution to my constant dilemma and I'm writing it here since I'm sure I
-         *  probably won't be able to work on it soon, but I don't want to forget since it's perhaps the
-         *  most genius solution I've ever had since I learnt how to get a quadratic function's grap-
-         *  ok, honestly that isn't much of an achievement but whatever works to fill this one commit
-         *  
-         *  by the way, reader, hi
+         *  Y A T T A ! ! !
+         *  Now I just need to clean up
          *  
          *  TODO END -------------------
          */
@@ -128,6 +125,15 @@ public class Timeline : MonoBehaviour
         }
     }
 
+    public void updateNextBeat(string reason = "")
+    {
+        //THE SOLUTION TO MY DILEMMA
+        //Why didn't I think of this before
+        nextbeat += beatdur * beatmultiplier;
+        //Debug: to check why did the next beat get updated
+        Debug.Log("Updated nextbeat to: " + nextbeat + " (" + reason + ")");
+    }
+
 
     public void addAction(byte actionType, float position, string argument1 = "")
     {
@@ -152,7 +158,6 @@ public class Timeline : MonoBehaviour
             beatcount += snap;
             pastRevolution += (beatdur * snap);
         }
-
     }
 
     public void checkTimeline()
@@ -172,8 +177,6 @@ public class Timeline : MonoBehaviour
             }
         }
     }
-
-
 
     IEnumerator performAction(byte actionType, string argument1 = "")
     {
@@ -355,7 +358,7 @@ struct actionElement
     public float position;
     public byte action;
     public string arg1;
-
+    //TODO: Use an enum here
     public actionElement(byte act, float pos, string a1 = "")
     {
         position = pos;

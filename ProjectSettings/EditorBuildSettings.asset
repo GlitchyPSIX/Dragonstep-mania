@@ -17,3 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/GameScreen.unity
     guid: a07c96c91715c1c4c94226a87a0a1664
+  - enabled: 1
+    path: Assets/loadiine.unity
+    guid: dd224b611698e9c47a30b24ce04ef649
+  m_configObjects: {}

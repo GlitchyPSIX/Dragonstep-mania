@@ -44,7 +44,7 @@ public class Timeline : MonoBehaviour
         //for every background stepswitcher
         BackgroundSwitchers = GameObject.FindGameObjectsWithTag("Background");
         checkstepM = GetComponent<CheckStep>();
-        StartCoroutine(addSampleBeatmap(3));
+        StartCoroutine(addSampleBeatmap(1));
 
         conductor = GetComponent<Conductor>();
         checkstepM = GetComponent<CheckStep>();
@@ -123,6 +123,13 @@ public class Timeline : MonoBehaviour
             //toggle Auto
             autoMode = !autoMode;
         }
+
+        if (Input.GetKeyDown("q") && AudioListener.pause == true)
+        {
+            //start song
+            StartCoroutine(conductor.resetBeatmap());
+            AudioListener.pause = false;
+        }
     }
 
     public void updateNextBeat(string reason = "")
@@ -135,7 +142,7 @@ public class Timeline : MonoBehaviour
     }
 
 
-    public void addAction(byte actionType, float position, string argument1 = "")
+    public void addAction(actionElement.actions actionType, float position, string argument1 = "")
     {
         if (argument1 == "")
         {
@@ -166,85 +173,103 @@ public class Timeline : MonoBehaviour
         {
             if (item.position == (beatcount + 1))
             {
-                StartCoroutine(performAction(item.action, item.arg1));
+                List<string> itemargs = new List<string>();
+                foreach(string argument in item.args)
+                {
+                    itemargs.Add(argument);
+                }
+                itemargs.Add((beatcount + 1).ToString());
+                StartCoroutine(performAction(item.action, itemargs.ToArray()));
             }
         }
         foreach (actionElement item in surfaceActionList)
         {
             if (item.position == (beatcount + 1))
             {
-                StartCoroutine(performAction(item.action, item.arg1));
+                StartCoroutine(performAction(item.action, item.args));
             }
         }
     }
 
-    IEnumerator performAction(byte actionType, string argument1 = "")
+    IEnumerator performAction(actionElement.actions actionType, string[] args = null)
     {
         Debug.Log("Performing action: " + actionType.ToString());
         switch (actionType)
         {
-            case 0:
+            case actionElement.actions.Preparation:
                 {
                     //Prepare
-                    togglePrepare(int.Parse(argument1), true, false);
+                    togglePrepare(int.Parse(args[0]), true, false);
                     break;
                 }
-            case 1:
+            case actionElement.actions.Active:
                 {
                     //Stop prepare
                     togglePrepare(1, false, false);
                     break;
                 }
-            case 2:
+            case actionElement.actions.BeatSwitch:
                 {
                     //Switch beat
                     switchStep(true);
                     break;
                 }
-            case 3:
+            case actionElement.actions.Tailswing:
                 {
                     //Swing tail
                     break;
                 }
-            case 4:
+            case actionElement.actions.CPUStill:
                 {
                     //Stay Still (Preparing) (Also affects CPU)
-                    togglePrepare(int.Parse(argument1), true, true);
+                    togglePrepare(int.Parse(args[0]), true, true);
                     break;
                 }
-            case 5:
+            case actionElement.actions.CPUActive:
                 {
                     //Move Again (Preparing) (Also affects CPU)
-                    togglePrepare(int.Parse(argument1), true, false);
+                    togglePrepare(int.Parse(args[0]), true, false);
                     break;
                 }
-            case 6:
+            case actionElement.actions.ToggleAuto:
                 {
                     //Toggle Auto
                     autoMode = !autoMode;
                     break;
                 }
-            case 7:
+            case actionElement.actions.EndGame:
                 {
                     //End game
                     break;
                 }
-            case 8:
+            case actionElement.actions.PlaySound:
                 {
                     //playSound
-                    playSound(argument1);
+                    playSound(args[0]);
                     break;
                 }
-            case 9:
+            case actionElement.actions.SnapAdjust:
                 {
                     //Change snap
-                    snap = int.Parse(argument1);
+                    snap = int.Parse(args[0]);
                     break;
                 }
-            case 12:
+            case actionElement.actions.Reset:
                 {
                     //Restart beatmap
                     StartCoroutine(conductor.resetBeatmap());
+                    break;
+                }
+            case actionElement.actions.Pause:
+                {
+                    //Pause
+                    conductor.resetStartOfSong(false);
+                    break;
+                }
+            case actionElement.actions.PauseAndReset:
+                {
+                    //Reset, pause
+                    conductor.resetStartOfSong(true);
                     break;
                 }
         }
@@ -316,36 +341,7 @@ public class Timeline : MonoBehaviour
             case 1:
                 {
                     //sample beatmap
-                    addAction(5, 1f, "1");
-                    addAction(1, 4, "1");
-                    addAction(1, 6, "1");
-                    addAction(2, 7.5f);
-                    addAction(8, 13f, "cowbell");
-                    addAction(8, 14f, "cowbell");
-                    addAction(8, 15f, "cowbell");
-                    addAction(2, 15.5f);
-                    addAction(8, 21, "cowbell");
-                    addAction(8, 22, "cowbell");
-                    addAction(8, 23, "cowbell");
-                    addAction(2, 22.5f);
-                    addAction(8, 29.5f, "cowbell");
-                    addAction(8, 30.5f, "cowbell");
-                    addAction(8, 31.5f, "cowbell");
-                    addAction(2, 30.5f);
-                    addAction(8, 31.5f, "cowbell");
-                    break;
-                }
-            case 2:
-                {
-                    addAction(12, 113f, "ahaha");
-                    break;
-                }
-            case 3:
-                {
-                    addAction(4, 0f, "1");
-                    addAction(5, 4f, "2");
-                    addAction(5, 12f, "1");
-                    addAction(1, 15f, "1");
+                    addAction(actionElement.actions.PlaySound, 4, "cowbell");
                     break;
                 }
         }
@@ -353,16 +349,40 @@ public class Timeline : MonoBehaviour
 
 }
 
-struct actionElement
+public struct actionElement
 {
     public float position;
-    public byte action;
-    public string arg1;
+    public enum actions {
+        Preparation,
+        Still,
+        Active,
+        CPUStill,
+        CPUActive,
+        ToggleAuto,
+        BeatSwitch,
+        Tailswing,
+        PlaySound,
+        SnapAdjust,
+        Pause,
+        PauseAndStop,
+        PauseAndReset,
+        EndGame,
+        Reset
+    }
+    public actions action;
+    public string[] args;
     //TODO: Use an enum here
-    public actionElement(byte act, float pos, string a1 = "")
+    public actionElement(actions act, float pos, string argm = null)
     {
         position = pos;
         action = act;
-        arg1 = a1;
+        if (argm != null)
+        {
+            args = argm.Split(' ');
+        }
+        else
+        {
+            args = new string[0];
+        }
     }
 }

@@ -13,9 +13,13 @@ public class TransitionControl : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        Initialize();
+    }
+
+    public void Initialize()
+    {
         ac = GetComponent<Animator>();
         maskimage = transform.Find("Mask").GetComponent<Image>();
-        DontDestroyOnLoad(gameObject);
     }
 
     public void PlayTransition(Sprite face, bool comingIn)

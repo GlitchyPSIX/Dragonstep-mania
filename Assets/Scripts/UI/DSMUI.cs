@@ -61,14 +61,7 @@ namespace DSMUI
         /// </summary>
         public class MenuItem
         {
-            // This is for the MenuItems that appear in menus like Main Menu.
-
-            private string subtitle;
             private UnityAction action;
-            private string title;
-            private Sprite icon;
-            private AudioClip sfx;
-
             public static GameObject MenuItemPrefab = Assets.Objects.MenuItemObject.gameObject;
             GameObject returnedMenuItem = Object.Instantiate(MenuItemPrefab);
             //ONE OF THESE MUST ALWAYS BE PRESENT
@@ -95,57 +88,13 @@ namespace DSMUI
                 }
             }
 
-            public string Subtitle
-            {
-                get
-                {
-                    return subtitle;
-                }
+            public string Subtitle { get; set; }
 
-                set
-                {
-                    subtitle = value;
-                }
-            }
+            public string Title { get; set; }
 
-            public string Title
-            {
-                get
-                {
-                    return title;
-                }
+            public Sprite Icon { get; set; }
 
-                set
-                {
-                    title = value;
-                }
-            }
-
-            public Sprite Icon
-            {
-                get
-                {
-                    return icon;
-                }
-
-                set
-                {
-                    icon = value;
-                }
-            }
-
-            public AudioClip SFX
-            {
-                get
-                {
-                    return sfx;
-                }
-
-                set
-                {
-                    sfx = value;
-                }
-            }
+            public AudioClip SFX { get; set; }
 
             public MenuItem()
             {
@@ -216,6 +165,7 @@ namespace DSMUI
         /// Class containing everything related to Dialogs.
         /// <param name="Title">The title of the dialog</param>
         /// </summary>
+        /// Man, this is probably the worst thing I've done in a LONG while
         public class Dialog
         {
             public static GameObject DialogPrefab = Assets.Objects.DialogObject.gameObject;
@@ -416,7 +366,6 @@ namespace DSMUI
             {
                 returnedDialog.GetComponent<Animator>().Play("Exit");
                 // all UI SFX should be no more than 1.2s.
-                // YEAH BECAUSE WHEN YOU DESTROY THE ENTIRE GAME OBJECT, THE AUDIOSOURCE DIES TOO AND THE AUDIO CUTS LUL
                 Object.Destroy(returnedDialog, 1.2f);
             }
 
@@ -430,11 +379,6 @@ namespace DSMUI
 
             public GameObject TransitionController;
 
-            //public TransitionActions(GameObject TRC)
-            //{
-            //    TransitionController = TRC;
-            //}
-
             public void StartSceneTransition(string scenepath, Sprite mask)
             {
                 StartCoroutine(GotoScene(scenepath, mask));
@@ -442,20 +386,29 @@ namespace DSMUI
 
             public void TransitionFace(Sprite face, bool ComingIn)
             {
-                TransitionController.GetComponent<TransitionControl>().PlayTransition(face, true);
+                TransitionController.GetComponent<TransitionControl>().PlayTransition(face, ComingIn);
             }
 
             public IEnumerator GotoScene(string scenetgt, Sprite face)
             {
-                AsyncOperation IsSceneLoaded = SceneManager.LoadSceneAsync(scenetgt);
-                Debug.Log("yeehaw");
-                IsSceneLoaded.allowSceneActivation = false;
-                TransitionController.GetComponent<TransitionControl>().PlayTransition(face, false);
+                TransitionFace(face, false);
                 yield return new WaitForSeconds(TransitionController.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length /* + TransitionController.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime */);
-                yield return new WaitUntil(() => IsSceneLoaded.progress == 0.9f);
-                Debug.Log("I'm alive");
-                TransitionController.GetComponent<TransitionControl>().PlayTransition(face, true);
+                AsyncOperation IsSceneLoaded = SceneManager.LoadSceneAsync(scenetgt, LoadSceneMode.Additive);
+                Scene currscene = SceneManager.GetActiveScene();
+                Debug.Log("Loading scene: " + scenetgt);
+                while (!IsSceneLoaded.isDone)
+                {
+                    yield return null;
+                }
                 IsSceneLoaded.allowSceneActivation = true;
+                TransitionController.transform.SetParent(null);
+                Scene scr = SceneManager.GetSceneByName(scenetgt);
+                SceneManager.MoveGameObjectToScene(TransitionController, scr);
+                SceneManager.SetActiveScene(scr);
+                SceneManager.UnloadSceneAsync(currscene);
+                //TransitionController.transform.SetParent(GameObject.FindGameObjectWithTag("UICanvas").transform);
+                Debug.Log("Scene " + scenetgt + " loaded.");
+                TransitionController.GetComponent<TransitionControl>().PlayTransition(face, true);   
             }
 
         }

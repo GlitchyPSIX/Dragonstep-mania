@@ -23,7 +23,7 @@ public class Conductor : MonoBehaviour
     {
         timeline = GetComponent<Timeline>();
         song = GetComponent<AudioSource>();
-        resetStartOfSong(false);
+        resetStartOfSong(true);
     }
 
     // Update is called once per frame

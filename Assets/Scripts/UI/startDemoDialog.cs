@@ -73,7 +73,7 @@ public class startDemoDialog : MonoBehaviour
 
     void StartGame()
     {
-        tra.StartSceneTransition("GameScreen", Transitions.Wink);
+        tra.StartSceneTransition("loadiine", Transitions.Wink);
     }
 
     void StartDemoDialogAfter()
@@ -91,8 +91,11 @@ public class startDemoDialog : MonoBehaviour
         //                                    null,
         //                                    null,
         //                                     SoundEffects.Confirm, SoundEffects.DialogDefault, "", "OK", "");
-        
-        dialogObj = new Dialog("Demo", "Remember this is a demo. Any error or missing thing should be reported to me in the respective channel.", "Gotcha", () => { dialogObj.DestroyDialog(); mainMenu(); tra.TransitionFace(Transitions.Normal, true); }, SoundEffects.Select, InterfaceIcons.Info, SoundEffects.DialogDefault);
+        dialogObj = new Dialog("Demo",
+            "Remember this is a demo. Any error or missing thing should be reported to me in the respective channel.",
+            "Gotcha",
+            () => { dialogObj.DestroyDialog(); mainMenu(); tra.TransitionFace(Transitions.Normal, true);},
+            SoundEffects.Select, InterfaceIcons.Info, SoundEffects.DialogDefault);
         dialogObj.ShowDialog();
     }
 }

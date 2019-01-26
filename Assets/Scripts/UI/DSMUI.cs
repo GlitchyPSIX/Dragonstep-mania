@@ -37,6 +37,7 @@ namespace DSMUI
         public class Objects
         {
             public static GameObject DialogObject = Resources.Load<GameObject>("Prefabs/UI/Dialog");
+            public static GameObject DialogButtonObject = Resources.Load<GameObject>("Prefabs/UI/DialogButton");
             public static GameObject MenuItemObject = Resources.Load<GameObject>("Prefabs/UI/MenuItem");
             public static GameObject TransitionOverlay = Resources.Load<GameObject>("Prefabs/UI/TransitionBG");
         }
@@ -57,12 +58,49 @@ namespace DSMUI
     namespace Objects
     {
         /// <summary>
+        /// Class containing everything related to common custom buttons.
+        /// </summary>
+        public class UIButton
+        {
+            protected static GameObject DialogButtonPrefab = Assets.Objects.DialogButtonObject.gameObject;
+            protected GameObject returnedButtonItem = Object.Instantiate(DialogButtonPrefab);
+            protected string _name;
+            protected AudioClip _sfx;
+
+            public string Text{
+                get { return returnedButtonItem.transform.GetChild(1).GetComponent<Text>().text; }
+                set { returnedButtonItem.transform.GetChild(1).GetComponent<Text>().text = value; }
+}
+
+            public AudioClip SFX
+            {
+                get { return returnedButtonItem.transform.GetChild(0).GetComponent<AudioSource>().clip; }
+                set { returnedButtonItem.transform.GetChild(0).GetComponent<AudioSource>().clip = value; }
+            }
+
+            public GameObject gameObject
+            {
+                get { return returnedButtonItem; }
+            }
+            public UnityAction Action { get; set; }
+
+            public UIButton(float x, float y, Transform transf = null)
+            {
+                returnedButtonItem.SetActive(true);
+                if (transf != null)
+                { returnedButtonItem.transform.SetParent(transf); }
+                else
+                { returnedButtonItem.GetComponent<RectTransform>().position = new Vector2(x, y); }
+            }
+        }
+
+        /// <summary>
         /// Class containing everything related to Menu items (Squares).
         /// </summary>
         public class MenuItem
         {
             private UnityAction action;
-            public static GameObject MenuItemPrefab = Assets.Objects.MenuItemObject.gameObject;
+            static GameObject MenuItemPrefab = Assets.Objects.MenuItemObject.gameObject;
             GameObject returnedMenuItem = Object.Instantiate(MenuItemPrefab);
             //ONE OF THESE MUST ALWAYS BE PRESENT
             MenuSubtitleController subc = GameObject.FindGameObjectWithTag("UIMenuSubtitle").GetComponent<MenuSubtitleController>();
@@ -170,18 +208,15 @@ namespace DSMUI
         {
             public static GameObject DialogPrefab = Assets.Objects.DialogObject.gameObject;
             GameObject returnedDialog = Object.Instantiate(DialogPrefab);
-            public string title;
-            public string body;
-            public GameObject buttonL;
-            public GameObject buttonM;
-            public GameObject buttonR;
-            public string buttonLText;
-            public string buttonMText;
-            public string buttonRText;
-            public AudioClip dialogSFX;
-            public AudioClip buttonLSFX;
-            public AudioClip buttonMSFX;
-            public AudioClip buttonRSFX;
+            string _title;
+            string _body;
+            GameObject buttonL;
+            GameObject buttonM;
+            GameObject buttonR;
+            AudioClip _dialogSFX;
+            AudioClip _buttonLSFX;
+            AudioClip buttonMSFX;
+            AudioClip buttonRSFX;
             public Button buttonActionR;
             public Button buttonActionM;
             public Button buttonActionL;
@@ -190,7 +225,7 @@ namespace DSMUI
             public Dialog(string Title, string Body, string ButtonText, UnityAction Action, AudioClip ButtonSFX, Sprite Icon = null, AudioClip DialogSFX = null)
             {
                 /*
-                 * hey this is nowhere as ugly as before
+                 * nevermind it was still ugly af
                  */
 
                 icon = returnedDialog.transform.Find("DialogBG").transform.Find("DialogIcon").transform.Find("DialogIconBG").transform.Find("Icon").gameObject;
@@ -308,11 +343,11 @@ namespace DSMUI
                 //Set dialog enter SFX
                 if (DialogSFX == null)
                 {
-                    dialogSFX = Assets.SoundEffects.DialogDefault;
+                    //dialogSFX = Assets.SoundEffects.DialogDefault;
                 }
                 else
                 {
-                    dialogSFX = DialogSFX;
+                    //dialogSFX = DialogSFX;
                 }
                 //Set button SFX
                 //Right button
